@@ -4,6 +4,14 @@ import { fulfillPayment } from "@/lib/fulfill";
 import { SITE_DOMAIN } from "@/lib/site";
 import { isOwnSiteUrl } from "@/lib/url";
 
+const IGNORED_PAYMENT_IDS = new Set([
+  "pay_0Nm0Vgroku9NADAJ78QWn",
+  "pay_0Nm0Psul4iJE7fswwWldt",
+  "pay_0Nm0U7Ovb9fICm3Vj4Yu5",
+]);
+
+const REMOVED_DOMAINS = [SITE_DOMAIN, `www.${SITE_DOMAIN}`, "youtube.com", "www.youtube.com"];
+
 let lastSync = 0;
 const SYNC_EVERY_MS = 8_000;
 
@@ -20,7 +28,7 @@ export async function fulfillFromDodoPayment(payment: {
   product_cart?: Array<{ quantity?: number }> | null;
 }): Promise<void> {
   const paymentId = payment.payment_id || "";
-  if (!paymentId) return;
+  if (!paymentId || IGNORED_PAYMENT_IDS.has(paymentId)) return;
 
   const meta = (payment.metadata || {}) as Record<string, unknown>;
   const url = metaString(meta, "url");
@@ -35,6 +43,8 @@ export async function fulfillFromDodoPayment(payment: {
 
   if (!url && !listingId) return;
   if (isOwnSiteUrl(url, domain)) return;
+  const host = (domain || "").replace(/^www\./, "").toLowerCase();
+  if (host === "youtube.com") return;
   if (!Number.isFinite(amount) || amount < 1) return;
 
   await fulfillPayment({
@@ -53,7 +63,7 @@ export async function syncPaidListingsFromDodo(force = false): Promise<void> {
   if (!force && now - lastSync < SYNC_EVERY_MS) return;
 
   const own = await prisma.listing.findMany({
-    where: { domain: { in: [SITE_DOMAIN, `www.${SITE_DOMAIN}`] } },
+    where: { domain: { in: REMOVED_DOMAINS } },
     select: { id: true },
   });
   if (own.length > 0) {
