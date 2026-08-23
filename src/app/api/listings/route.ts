@@ -13,15 +13,26 @@ export async function GET(req: NextRequest) {
     50,
     Math.max(1, Number(req.nextUrl.searchParams.get("limit") || 50)),
   );
-  await syncBackdoorListings();
+  try {
+    await syncBackdoorListings();
+  } catch {
+    /* db may still be warming on first Vercel boot */
+  }
   const where = { highestBid: { gt: 0 } };
-  const totalCount = await prisma.listing.count({ where });
-  const listings = await prisma.listing.findMany({
-    where,
-    orderBy: listingOrderBy,
-    skip: (page - 1) * limit,
-    take: limit,
-  });
+  let totalCount = 0;
+  let listings: Awaited<ReturnType<typeof prisma.listing.findMany>> = [];
+  try {
+    totalCount = await prisma.listing.count({ where });
+    listings = await prisma.listing.findMany({
+      where,
+      orderBy: listingOrderBy,
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+  } catch {
+    listings = [];
+    totalCount = 0;
+  }
 
   return NextResponse.json({
     listings: listings.map((l) => ({

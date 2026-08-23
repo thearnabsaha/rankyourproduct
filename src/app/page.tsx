@@ -12,11 +12,16 @@ import { absUrl, breadcrumbJsonLd, SEO_DESCRIPTION, SEO_TITLE } from "@/lib/seo"
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  await syncBackdoorListings();
-  const top = await prisma.listing.findFirst({
-    where: { highestBid: { gt: 0 } },
-    orderBy: listingOrderBy,
-  });
+  let top: { domain: string } | null = null;
+  try {
+    await syncBackdoorListings();
+    top = await prisma.listing.findFirst({
+      where: { highestBid: { gt: 0 } },
+      orderBy: listingOrderBy,
+    });
+  } catch {
+    top = null;
+  }
   const title = top
     ? `${top.domain} is #1 — rankyourproduct`
     : SEO_TITLE;
@@ -39,15 +44,22 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  await syncBackdoorListings();
-  const listings = await prisma.listing.findMany({
-    where: { highestBid: { gt: 0 } },
-    orderBy: listingOrderBy,
-    take: 50,
-  });
-  const totalCount = await prisma.listing.count({
-    where: { highestBid: { gt: 0 } },
-  });
+  let listings: Awaited<ReturnType<typeof prisma.listing.findMany>> = [];
+  let totalCount = 0;
+  try {
+    await syncBackdoorListings();
+    listings = await prisma.listing.findMany({
+      where: { highestBid: { gt: 0 } },
+      orderBy: listingOrderBy,
+      take: 50,
+    });
+    totalCount = await prisma.listing.count({
+      where: { highestBid: { gt: 0 } },
+    });
+  } catch {
+    listings = [];
+    totalCount = 0;
+  }
 
   const initial = listings.map((l) => ({
     id: l.id,
