@@ -22,4 +22,11 @@ export const BACKDOOR_LISTINGS: BackdoorListing[] = [
     pinOrder: 1,
     clicks: 190,
   },
+  {
+    url: "https://x.com/TheArnabSaha",
+    title: "Arnab D. Saha",
+    bid: 4,
+    pinOrder: 2,
+    clicks: 156,
+  },
 ];

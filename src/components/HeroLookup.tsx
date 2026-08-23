@@ -8,6 +8,7 @@ type Preview = {
   url: string;
   domain: string;
   title: string;
+  imageUrl?: string;
   highestBid: number;
   totalBids: number;
   rank: number;
@@ -134,9 +135,9 @@ export default function HeroLookup() {
               <div className="bg-white border border-foreground/[0.04] rounded-2xl p-4 sm:p-5 flex items-center gap-4 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
                 <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-2xl border border-foreground/[0.04] shadow-sm flex items-center justify-center overflow-hidden">
                   <img
-                    src={listingAvatar(listing.url, listing.domain)}
+                    src={listingAvatar(listing.url, listing.domain, listing.imageUrl)}
                     alt=""
-                    className="w-8 h-8 object-cover"
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="min-w-0 text-left">

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
-import { parseListingUrl } from "@/lib/url";
+import { parseListingUrl, xHandleFromUrl } from "@/lib/url";
 import { scrapeTitle } from "@/lib/og";
+import { fetchXProfile } from "@/lib/x-profile";
 import { globalHighestBid, listingOrderBy, predictedRank } from "@/lib/rank";
 import { syncBackdoorListings } from "@/lib/backdoor";
 
@@ -44,6 +45,7 @@ export async function GET(req: NextRequest) {
       totalClicks: l.totalClicks,
       createdAt: l.createdAt.toISOString(),
       title: l.title,
+      imageUrl: l.imageUrl,
     })),
     pagination: {
       page,
@@ -71,8 +73,11 @@ export async function POST(req: NextRequest) {
     const existing = await prisma.listing.findUnique({
       where: { canonicalUrl: parsed.canonicalUrl },
     });
+    const handle = xHandleFromUrl(parsed.canonicalUrl);
+    const profile = handle ? await fetchXProfile(handle) : null;
     const scraped = existing?.title || (await scrapeTitle(parsed.canonicalUrl));
-    const title = scraped || parsed.displayUrl;
+    const title = profile?.name || scraped || parsed.displayUrl;
+    const imageUrl = profile?.avatarUrl || existing?.imageUrl || "";
     const top = await globalHighestBid();
     const highestBid = existing?.highestBid ?? 0;
     const rank = await predictedRank(
@@ -86,6 +91,7 @@ export async function POST(req: NextRequest) {
         url: parsed.canonicalUrl,
         domain: parsed.domain,
         title,
+        imageUrl,
         highestBid,
         totalBids: existing?.totalBids ?? 0,
         rank,

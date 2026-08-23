@@ -52,6 +52,7 @@ export default async function Home() {
     highestBid: l.highestBid,
     totalClicks: l.totalClicks,
     title: l.title,
+    imageUrl: l.imageUrl,
   }));
 
   const itemList = {

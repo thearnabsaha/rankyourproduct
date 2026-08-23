@@ -164,11 +164,14 @@ export function listingLabel(canonicalUrl: string, domain?: string): string {
     .replace(/\/$/, "");
 }
 
-export function listingAvatar(canonicalUrl: string, domain: string): string {
+export function listingAvatar(
+  canonicalUrl: string,
+  domain: string,
+  imageUrl?: string | null,
+): string {
+  if (imageUrl) return imageUrl;
   const handle = xHandleFromUrl(canonicalUrl);
-  if (handle) {
-    return `https://unavatar.io/twitter/${encodeURIComponent(handle)}`;
-  }
+  if (handle) return `/api/x-avatar/${encodeURIComponent(handle)}`;
   return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
 }
 

@@ -13,6 +13,7 @@ model Listing {
   canonicalUrl String   @unique
   domain       String
   title        String   @default("")
+  imageUrl     String   @default("")
   highestBid   Int      @default(0)
   totalBids    Int      @default(0)
   totalClicks  Int      @default(0)

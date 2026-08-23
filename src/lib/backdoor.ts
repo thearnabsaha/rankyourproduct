@@ -1,6 +1,7 @@
 import prisma from "@/lib/db";
-import { parseListingUrl } from "@/lib/url";
+import { parseListingUrl, xHandleFromUrl } from "@/lib/url";
 import { BACKDOOR_LISTINGS } from "@/data/backdoor-listings";
+import { fetchXProfile } from "@/lib/x-profile";
 
 let lastSync = 0;
 const SYNC_EVERY_MS = 5_000;
@@ -19,12 +20,18 @@ export async function syncBackdoorListings(force = false) {
     canonicals.push(parsed.canonicalUrl);
 
     const clicks = Math.max(0, Math.floor(item.clicks ?? 0));
+    const handle = xHandleFromUrl(parsed.canonicalUrl);
+    const profile = handle ? await fetchXProfile(handle) : null;
+    const title = profile?.name || item.title;
+    const imageUrl = profile?.avatarUrl || "";
+
     const listing = await prisma.listing.upsert({
       where: { canonicalUrl: parsed.canonicalUrl },
       create: {
         canonicalUrl: parsed.canonicalUrl,
         domain: parsed.domain,
-        title: item.title,
+        title,
+        imageUrl,
         highestBid: bid,
         totalBids: 1,
         totalClicks: clicks,
@@ -33,7 +40,8 @@ export async function syncBackdoorListings(force = false) {
       },
       update: {
         domain: parsed.domain,
-        title: item.title,
+        title,
+        ...(imageUrl ? { imageUrl } : {}),
         highestBid: bid,
         totalClicks: clicks,
         pinned: true,

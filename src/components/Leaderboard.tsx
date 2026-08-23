@@ -11,6 +11,7 @@ export type BoardListing = {
   highestBid: number;
   totalClicks: number;
   title: string;
+  imageUrl?: string;
 };
 
 export default function Leaderboard({
@@ -112,9 +113,9 @@ export default function Leaderboard({
                 </div>
                 <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-2xl border border-foreground/[0.04] shadow-sm flex items-center justify-center overflow-hidden">
                   <img
-                    src={listingAvatar(item.url, item.domain)}
+                    src={listingAvatar(item.url, item.domain, item.imageUrl)}
                     alt={`${listingLabel(item.url, item.domain)} avatar`}
-                    className="w-6 h-6 sm:w-10 sm:h-10 object-cover"
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="flex-grow min-w-0 flex flex-col justify-center">
