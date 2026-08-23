@@ -1,5 +1,8 @@
+import prisma from "@/lib/db";
 import { getDodoClient, isMockPayments } from "@/lib/dodo";
 import { fulfillPayment } from "@/lib/fulfill";
+import { SITE_DOMAIN } from "@/lib/site";
+import { isOwnSiteUrl } from "@/lib/url";
 
 let lastSync = 0;
 const SYNC_EVERY_MS = 8_000;
@@ -31,6 +34,7 @@ export async function fulfillFromDodoPayment(payment: {
     Math.round((payment.total_amount || 0) / 100);
 
   if (!url && !listingId) return;
+  if (isOwnSiteUrl(url, domain)) return;
   if (!Number.isFinite(amount) || amount < 1) return;
 
   await fulfillPayment({
@@ -47,6 +51,17 @@ export async function syncPaidListingsFromDodo(force = false): Promise<void> {
   if (isMockPayments()) return;
   const now = Date.now();
   if (!force && now - lastSync < SYNC_EVERY_MS) return;
+
+  const own = await prisma.listing.findMany({
+    where: { domain: { in: [SITE_DOMAIN, `www.${SITE_DOMAIN}`] } },
+    select: { id: true },
+  });
+  if (own.length > 0) {
+    const ids = own.map((row) => row.id);
+    await prisma.bid.deleteMany({ where: { listingId: { in: ids } } });
+    await prisma.click.deleteMany({ where: { listingId: { in: ids } } });
+    await prisma.listing.deleteMany({ where: { id: { in: ids } } });
+  }
 
   const client = getDodoClient();
   const importPaid = async () => {

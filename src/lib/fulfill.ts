@@ -1,5 +1,5 @@
 import prisma from "@/lib/db";
-import { parseListingUrl } from "@/lib/url";
+import { isOwnSiteUrl, parseListingUrl } from "@/lib/url";
 import { uniqueSlugFor } from "@/lib/slug";
 import { scrapeTitle } from "@/lib/og";
 
@@ -43,6 +43,9 @@ export async function fulfillPayment(input: FulfillInput) {
   }
   if (!canonicalUrl) {
     throw new Error("listingId or url is required");
+  }
+  if (isOwnSiteUrl(canonicalUrl, domain)) {
+    return already;
   }
 
   if (!title) title = await scrapeTitle(canonicalUrl);

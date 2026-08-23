@@ -1,3 +1,5 @@
+import { SITE_DOMAIN } from "@/lib/site";
+
 const TRACKING_PARAMS = [
   "utm_source",
   "utm_medium",
@@ -155,12 +157,26 @@ export function xHandleFromUrl(canonicalUrl: string): string | null {
   }
 }
 
+export function isOwnSiteUrl(canonicalUrl: string, domain?: string): boolean {
+  const host = (domain || "")
+    .replace(/^www\./, "")
+    .toLowerCase();
+  if (host === SITE_DOMAIN) return true;
+  try {
+    const fromUrl = new URL(canonicalUrl).hostname.replace(/^www\./, "").toLowerCase();
+    return fromUrl === SITE_DOMAIN;
+  } catch {
+    return false;
+  }
+}
+
 export function isPublicListingUrl(canonicalUrl: string): boolean {
   try {
     const host = new URL(canonicalUrl).hostname.replace(/^www\./, "").toLowerCase();
     if (!host) return false;
     if (host === "localhost" || host === "127.0.0.1" || host === "::1") return false;
     if (host.endsWith(".local") || host.endsWith(".internal")) return false;
+    if (host === SITE_DOMAIN) return false;
     return true;
   } catch {
     return false;

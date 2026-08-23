@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
-import { parseListingUrl } from "@/lib/url";
+import { isOwnSiteUrl, parseListingUrl } from "@/lib/url";
 import { createDodoCheckout } from "@/lib/dodo";
 
 export const dynamic = "force-dynamic";
@@ -52,10 +52,22 @@ export async function POST(req: NextRequest) {
       url = listing.canonicalUrl;
       domain = listing.domain;
       title = listing.title;
+      if (isOwnSiteUrl(url, domain)) {
+        return NextResponse.json(
+          { error: "You can't list RankYourProduct on its own board." },
+          { status: 400 },
+        );
+      }
     } else {
       const parsed = parseListingUrl(url);
       url = parsed.canonicalUrl;
       domain = parsed.domain;
+      if (isOwnSiteUrl(url, domain)) {
+        return NextResponse.json(
+          { error: "You can't list RankYourProduct on its own board." },
+          { status: 400 },
+        );
+      }
       const existing = await prisma.listing.findUnique({
         where: { canonicalUrl: parsed.canonicalUrl },
       });
