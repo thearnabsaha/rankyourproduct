@@ -14,6 +14,7 @@ import {
 } from "@/lib/seo";
 import { X_HANDLE } from "@/lib/site";
 import { readPresence } from "@/lib/presence";
+import { syncBackdoorListings } from "@/lib/backdoor";
 import Analytics from "@/components/Analytics";
 
 const geistSans = Geist({
@@ -115,6 +116,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   let initial = { liveVisitors: 0, totalVisitors: 0, totalRevenue: 0 };
   try {
+    await syncBackdoorListings();
     initial = await readPresence();
   } catch {
     /* db may be cold on Vercel */
