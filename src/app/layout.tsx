@@ -15,6 +15,7 @@ import {
 import { X_HANDLE } from "@/lib/site";
 import { readPresence } from "@/lib/presence";
 import { syncBackdoorListings } from "@/lib/backdoor";
+import { syncPaidListingsFromDodo } from "@/lib/dodo-sync";
 import Analytics from "@/components/Analytics";
 
 const geistSans = Geist({
@@ -117,6 +118,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   let initial = { liveVisitors: 0, totalVisitors: 0, totalRevenue: 0 };
   try {
     await syncBackdoorListings();
+    try {
+      await syncPaidListingsFromDodo();
+    } catch {
+      /* Dodo may be slow or unset; board still loads */
+    }
     initial = await readPresence();
   } catch {
     /* db may be cold on Vercel */

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMetadata } from "@/lib/seo";
+import { fulfillDodoPaymentById } from "@/lib/dodo-sync";
 
 export const dynamic = "force-dynamic";
 
@@ -14,10 +15,19 @@ export const metadata: Metadata = pageMetadata({
 export default async function SuccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ mock?: string }>;
+  searchParams: Promise<{ mock?: string; payment_id?: string; status?: string }>;
 }) {
   const q = await searchParams;
   const mock = q.mock === "1";
+  const paymentId = q.payment_id || "";
+
+  if (!mock && paymentId) {
+    try {
+      await fulfillDodoPaymentById(paymentId);
+    } catch {
+      /* webhook may still write the row */
+    }
+  }
 
   return (
     <div className="max-w-[560px] mx-auto px-6 py-24 text-center">
@@ -27,7 +37,7 @@ export default async function SuccessPage({
       <p className="text-[17px] leading-8 text-ink-soft mb-8">
         {mock
           ? "Test checkout finished. The listing is on the table — plug in Dodo Payments before you go public."
-          : "We have the payment. The table usually updates within a few seconds."}
+          : "We have the payment. Open the board — your listing should be on the table."}
       </p>
       <Link href="/" className="btn-primary px-6 py-3.5">
         See the table

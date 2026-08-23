@@ -14,7 +14,7 @@ export function isMockPayments(): boolean {
   return !dodoApiKey() || !dodoProductId();
 }
 
-function makeClient(environment: DodoEnv) {
+export function getDodoClient(environment: DodoEnv = dodoEnvironment) {
   return new DodoPayments({
     bearerToken: dodoApiKey(),
     environment,
@@ -42,7 +42,7 @@ async function createCheckoutSession(environment: DodoEnv, input: {
   amount: number;
   metadata: Record<string, string>;
 }) {
-  const session = await makeClient(environment).checkoutSessions.create({
+  const session = await getDodoClient(environment).checkoutSessions.create({
     product_cart: [
       {
         product_id: dodoProductId(),

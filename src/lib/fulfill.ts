@@ -30,15 +30,18 @@ export async function fulfillPayment(input: FulfillInput) {
 
   if (listingId) {
     const listing = await prisma.listing.findUnique({ where: { id: listingId } });
-    if (!listing) throw new Error("Listing not found");
-    canonicalUrl = listing.canonicalUrl;
-    domain = listing.domain;
-    if (!title) title = listing.title;
-  } else if (input.url) {
+    if (listing) {
+      canonicalUrl = listing.canonicalUrl;
+      domain = listing.domain;
+      if (!title) title = listing.title;
+    }
+  }
+  if (!canonicalUrl && input.url) {
     const parsed = parseListingUrl(input.url);
     canonicalUrl = parsed.canonicalUrl;
     domain = parsed.domain;
-  } else {
+  }
+  if (!canonicalUrl) {
     throw new Error("listingId or url is required");
   }
 
