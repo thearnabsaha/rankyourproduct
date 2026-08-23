@@ -34,7 +34,14 @@ export default function Leaderboard({
       .then((r) => r.json())
       .then((data) => {
         if (cancelled) return;
-        setListings(data.listings || []);
+        const incoming: BoardListing[] = data.listings || [];
+        setListings((prev) => {
+          const prevClicks = new Map(prev.map((row) => [row.id, row.totalClicks ?? 0]));
+          return incoming.map((item) => ({
+            ...item,
+            totalClicks: Math.max(item.totalClicks ?? 0, prevClicks.get(item.id) ?? 0),
+          }));
+        });
         setPages(data.pagination?.totalPages || 1);
       })
       .catch(() => {})
@@ -47,6 +54,13 @@ export default function Leaderboard({
   }, [page]);
 
   const openListing = async (item: BoardListing) => {
+    setListings((prev) =>
+      prev.map((row) =>
+        row.id === item.id
+          ? { ...row, totalClicks: (row.totalClicks ?? 0) + 1 }
+          : row,
+      ),
+    );
     fetch("/api/clicks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

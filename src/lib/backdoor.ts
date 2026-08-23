@@ -25,31 +25,38 @@ export async function syncBackdoorListings(force = false) {
     const title = profile?.name || item.title;
     const imageUrl = profile?.avatarUrl || "";
 
-    const listing = await prisma.listing.upsert({
+    const existing = await prisma.listing.findUnique({
       where: { canonicalUrl: parsed.canonicalUrl },
-      create: {
-        canonicalUrl: parsed.canonicalUrl,
-        slug: listingSlugFromCanonical(parsed.canonicalUrl),
-        domain: parsed.domain,
-        title,
-        imageUrl,
-        highestBid: bid,
-        totalBids: 1,
-        totalClicks: clicks,
-        pinned: true,
-        pinOrder,
-      },
-      update: {
-        slug: listingSlugFromCanonical(parsed.canonicalUrl),
-        domain: parsed.domain,
-        title,
-        ...(imageUrl ? { imageUrl } : {}),
-        highestBid: bid,
-        totalClicks: clicks,
-        pinned: true,
-        pinOrder,
-      },
     });
+
+    const listing = existing
+      ? await prisma.listing.update({
+          where: { id: existing.id },
+          data: {
+            slug: listingSlugFromCanonical(parsed.canonicalUrl),
+            domain: parsed.domain,
+            title,
+            ...(imageUrl ? { imageUrl } : {}),
+            highestBid: bid,
+            totalClicks: Math.max(clicks, existing.totalClicks),
+            pinned: true,
+            pinOrder,
+          },
+        })
+      : await prisma.listing.create({
+          data: {
+            canonicalUrl: parsed.canonicalUrl,
+            slug: listingSlugFromCanonical(parsed.canonicalUrl),
+            domain: parsed.domain,
+            title,
+            imageUrl,
+            highestBid: bid,
+            totalBids: 1,
+            totalClicks: clicks,
+            pinned: true,
+            pinOrder,
+          },
+        });
 
     if (clicks > 0) {
       const existingClicks = await prisma.click.count({

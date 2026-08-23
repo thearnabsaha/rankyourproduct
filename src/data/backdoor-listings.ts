@@ -5,6 +5,7 @@
  *
  * bid is the dollar amount shown on the row.
  * title is the subtitle under the URL.
+ * clicks is a floor (starting count). Real clicks add on top and are not reset.
  */
 export type BackdoorListing = {
   url: string;
