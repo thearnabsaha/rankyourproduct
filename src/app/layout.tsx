@@ -14,8 +14,7 @@ import {
 } from "@/lib/seo";
 import { X_HANDLE } from "@/lib/site";
 import { readPresence } from "@/lib/presence";
-import { syncBackdoorListings } from "@/lib/backdoor";
-import { syncPaidListingsFromDodo } from "@/lib/dodo-sync";
+import { syncBoard } from "@/lib/dodo-sync";
 import Analytics from "@/components/Analytics";
 
 const dmSans = DM_Sans({
@@ -111,12 +110,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   let initial = { liveVisitors: 0, totalVisitors: 0, totalRevenue: 0 };
   try {
-    await syncBackdoorListings();
-    try {
-      await syncPaidListingsFromDodo();
-    } catch {
-      /* Dodo may be slow or unset; board still loads */
-    }
+    await syncBoard();
     initial = await readPresence();
   } catch {
     /* db may be cold on Vercel */

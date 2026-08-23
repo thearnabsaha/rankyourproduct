@@ -1,8 +1,10 @@
+import { BACKDOOR_LISTINGS } from "@/data/backdoor-listings";
+import { syncBackdoorListings } from "@/lib/backdoor";
 import prisma from "@/lib/db";
 import { getDodoClient, isMockPayments } from "@/lib/dodo";
 import { fulfillPayment } from "@/lib/fulfill";
 import { SITE_DOMAIN } from "@/lib/site";
-import { isOwnSiteUrl } from "@/lib/url";
+import { isOwnSiteUrl, parseListingUrl } from "@/lib/url";
 
 const IGNORED_PAYMENT_IDS = new Set([
   "pay_0Nm0Vgroku9NADAJ78QWn",
@@ -104,4 +106,51 @@ export async function fulfillDodoPaymentById(paymentId: string): Promise<void> {
   const payment = await getDodoClient().payments.retrieve(paymentId);
   if (payment.status && payment.status !== "succeeded") return;
   await fulfillFromDodoPayment(payment);
+}
+
+export async function pruneUnpaidListings(): Promise<void> {
+  const allowed = new Set(
+    BACKDOOR_LISTINGS.map((item) => parseListingUrl(item.url).canonicalUrl),
+  );
+
+  const paid = await prisma.bid.findMany({
+    where: {
+      status: "succeeded",
+      NOT: [
+        { paymentId: { startsWith: "backdoor:" } },
+        { paymentId: { startsWith: "mock_" } },
+      ],
+    },
+    select: { listingId: true, paymentId: true },
+  });
+
+  const paidListingIds = new Set(
+    paid
+      .filter((row) => !IGNORED_PAYMENT_IDS.has(row.paymentId))
+      .map((row) => row.listingId),
+  );
+
+  const all = await prisma.listing.findMany({
+    select: { id: true, canonicalUrl: true },
+  });
+  const removeIds = all
+    .filter(
+      (row) => !allowed.has(row.canonicalUrl) && !paidListingIds.has(row.id),
+    )
+    .map((row) => row.id);
+
+  if (removeIds.length === 0) return;
+  await prisma.bid.deleteMany({ where: { listingId: { in: removeIds } } });
+  await prisma.click.deleteMany({ where: { listingId: { in: removeIds } } });
+  await prisma.listing.deleteMany({ where: { id: { in: removeIds } } });
+}
+
+export async function syncBoard(): Promise<void> {
+  await syncBackdoorListings();
+  try {
+    await syncPaidListingsFromDodo();
+  } catch {
+    /* Dodo may be slow */
+  }
+  await pruneUnpaidListings();
 }

@@ -4,8 +4,7 @@ import { parseListingUrl, xHandleFromUrl } from "@/lib/url";
 import { scrapeTitle } from "@/lib/og";
 import { fetchXProfile } from "@/lib/x-profile";
 import { globalHighestBid, listingOrderBy, predictedRank } from "@/lib/rank";
-import { syncBackdoorListings } from "@/lib/backdoor";
-import { syncPaidListingsFromDodo } from "@/lib/dodo-sync";
+import { syncBoard } from "@/lib/dodo-sync";
 
 export const dynamic = "force-dynamic";
 
@@ -16,8 +15,7 @@ export async function GET(req: NextRequest) {
     Math.max(1, Number(req.nextUrl.searchParams.get("limit") || 50)),
   );
   try {
-    await syncBackdoorListings();
-    await syncPaidListingsFromDodo();
+    await syncBoard();
   } catch {
     /* db may still be warming on first Vercel boot */
   }
