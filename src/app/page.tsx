@@ -8,6 +8,7 @@ import JsonLd from "@/components/JsonLd";
 import prisma from "@/lib/db";
 import { listingOrderBy } from "@/lib/rank";
 import { syncBackdoorListings } from "@/lib/backdoor";
+import { syncPaidListingsFromDodo } from "@/lib/dodo-sync";
 import {
   absUrl,
   breadcrumbJsonLd,
@@ -34,6 +35,11 @@ export default async function Home() {
   let recentClicks: Awaited<ReturnType<typeof getRecentClicks>> = [];
   try {
     await syncBackdoorListings();
+    try {
+      await syncPaidListingsFromDodo();
+    } catch {
+      /* paid rows still import from /api/listings */
+    }
     const [board, count, clicks] = await Promise.all([
       prisma.listing.findMany({
         where: { highestBid: { gt: 0 } },

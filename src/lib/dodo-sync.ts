@@ -47,7 +47,6 @@ export async function syncPaidListingsFromDodo(force = false): Promise<void> {
   if (isMockPayments()) return;
   const now = Date.now();
   if (!force && now - lastSync < SYNC_EVERY_MS) return;
-  lastSync = now;
 
   const client = getDodoClient();
   const importPaid = async () => {
@@ -69,9 +68,10 @@ export async function syncPaidListingsFromDodo(force = false): Promise<void> {
   await Promise.race([
     importPaid(),
     new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("dodo sync timeout")), 6000),
+      setTimeout(() => reject(new Error("dodo sync timeout")), 12000),
     ),
   ]);
+  lastSync = Date.now();
 }
 
 export async function fulfillDodoPaymentById(paymentId: string): Promise<void> {
