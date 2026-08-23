@@ -17,6 +17,7 @@ import {
   webPageJsonLd,
 } from "@/lib/seo";
 import { isPublicListingUrl, listingLabel } from "@/lib/url";
+import { getRecentClicks } from "@/lib/clicks";
 
 export const dynamic = "force-dynamic";
 
@@ -30,19 +31,27 @@ export const metadata: Metadata = pageMetadata({
 export default async function Home() {
   let listings: Awaited<ReturnType<typeof prisma.listing.findMany>> = [];
   let totalCount = 0;
+  let recentClicks: Awaited<ReturnType<typeof getRecentClicks>> = [];
   try {
     await syncBackdoorListings();
-    listings = await prisma.listing.findMany({
-      where: { highestBid: { gt: 0 } },
-      orderBy: listingOrderBy,
-      take: 50,
-    });
-    totalCount = await prisma.listing.count({
-      where: { highestBid: { gt: 0 } },
-    });
+    const [board, count, clicks] = await Promise.all([
+      prisma.listing.findMany({
+        where: { highestBid: { gt: 0 } },
+        orderBy: listingOrderBy,
+        take: 50,
+      }),
+      prisma.listing.count({
+        where: { highestBid: { gt: 0 } },
+      }),
+      getRecentClicks(),
+    ]);
+    listings = board;
+    totalCount = count;
+    recentClicks = clicks;
   } catch {
     listings = [];
     totalCount = 0;
+    recentClicks = [];
   }
 
   const initial = listings.map((l) => ({
@@ -87,7 +96,7 @@ export default async function Home() {
       <div className="relative min-h-screen pb-8 pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8 overflow-hidden w-full max-w-[2000px] mx-auto">
         <div className="w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 xl:gap-12 items-start">
           <aside className="order-3 lg:order-1 lg:col-span-3 lg:sticky lg:top-24 mt-12 lg:mt-0">
-            <LiveTraffic />
+            <LiveTraffic initialClicks={recentClicks} />
           </aside>
           <div className="order-1 lg:order-2 lg:col-span-6 flex flex-col items-center">
             <HeroLookup />

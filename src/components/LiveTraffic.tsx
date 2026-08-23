@@ -6,7 +6,7 @@ import { UTM_SOURCE } from "@/lib/site";
 import { listingLabel, listingSlugFromCanonical, withUtm } from "@/lib/url";
 import Link from "next/link";
 
-type Click = {
+export type RecentClickView = {
   id: string;
   domain: string;
   url: string;
@@ -14,9 +14,13 @@ type Click = {
   createdAt: string;
 };
 
-export default function LiveTraffic() {
-  const [clicks, setClicks] = useState<Click[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function LiveTraffic({
+  initialClicks = [],
+}: {
+  initialClicks?: RecentClickView[];
+}) {
+  const [clicks, setClicks] = useState<RecentClickView[]>(initialClicks);
+  const [loading, setLoading] = useState(initialClicks.length === 0);
   const [, setTick] = useState(0);
 
   useEffect(() => {
@@ -33,14 +37,14 @@ export default function LiveTraffic() {
         setLoading(false);
       }
     };
-    load();
-    const a = setInterval(load, 60000);
+    if (initialClicks.length === 0) load();
+    const a = setInterval(load, 30000);
     const b = setInterval(() => setTick((n) => n + 1), 15000);
     return () => {
       clearInterval(a);
       clearInterval(b);
     };
-  }, []);
+  }, [initialClicks.length]);
 
   if (loading && clicks.length === 0) {
     return (
