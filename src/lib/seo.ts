@@ -4,7 +4,7 @@ export const CANONICAL_HOST = `https://${SITE_DOMAIN}`;
 
 export const SEO_TITLE = `${SITE_NAME} — A row on the board starts at $1`;
 export const SEO_DESCRIPTION =
-  "Drop in a product URL, pay a whole-dollar amount from $1, and that number is your place on the public product table.";
+  "Drop in a product URL or an X @handle, pay a whole-dollar amount from $1, and that number is your place on the public table.";
 
 export function absUrl(path = "/"): string {
   const clean = path.startsWith("/") ? path : `/${path}`;

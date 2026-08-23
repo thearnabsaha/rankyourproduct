@@ -44,7 +44,7 @@ export default function RulesPage() {
               name: "What can I list?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "A product site, startup page, or portfolio URL. Chat, invite, and shortened links are refused.",
+                text: "A product site, startup page, portfolio URL, or an X @handle. Chat, invite, and shortened links are refused.",
               },
             },
             {
@@ -62,8 +62,9 @@ export default function RulesPage() {
         How this board works
       </h1>
       <p className="text-[17px] leading-8 text-black/75 mb-10">
-        rankyourproduct is an open table of product URLs. The place you sit is
-        the largest amount you have actually paid. That is the whole ranking.
+        rankyourproduct is an open table of product URLs and X profiles. The
+        place you sit is the largest amount you have actually paid. That is the
+        whole ranking.
       </p>
 
       <section className="space-y-4 mb-10">
@@ -84,7 +85,7 @@ export default function RulesPage() {
             keeps the better row.
           </li>
           <li>
-            To climb, submit the same URL with a larger amount. You pay that{" "}
+            To climb, submit the same URL or @handle with a larger amount. You pay that{" "}
             <strong className="text-black">new total in full</strong>, not the
             gap.
           </li>
@@ -101,7 +102,8 @@ export default function RulesPage() {
         </h2>
         <ul className="list-disc pl-5 space-y-3 text-[17px] leading-8 text-black/75">
           <li>
-            A product site, a startup page, or a personal portfolio URL.
+            A product site, a startup page, a portfolio URL, or an X profile
+            (@handle, x.com/you, or twitter.com/you).
           </li>
           <li>
             Group chats and invite links are refused (Telegram, WhatsApp,
@@ -109,9 +111,10 @@ export default function RulesPage() {
           </li>
           <li>Shortened links are refused. Use the real destination.</li>
           <li>
-            One cleaned URL is one row. Tracking junk is stripped. App Store,
-            Play Store, and GitHub listings use the full path, so two apps
-            never share a seat.
+            One cleaned URL or handle is one row. Tracking junk is stripped.
+            The same X handle from @you, x.com/you, and twitter.com/you share a
+            row. App Store, Play Store, and GitHub listings use the full path,
+            so two apps never share a seat.
           </li>
         </ul>
       </section>

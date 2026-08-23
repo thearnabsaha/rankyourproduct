@@ -64,7 +64,7 @@ export default function OpenGraphImage() {
             maxWidth: 980,
           }}
         >
-          Put your product on the board.
+          Rank your product or X profile.
         </div>
         <div
           style={{

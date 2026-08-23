@@ -59,11 +59,11 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Need a product link" }, { status: 400 });
+    return NextResponse.json({ error: "Need a product link or @handle" }, { status: 400 });
   }
 
   if (!body.url?.trim()) {
-    return NextResponse.json({ error: "Need a product link" }, { status: 400 });
+    return NextResponse.json({ error: "Need a product link or @handle" }, { status: 400 });
   }
 
   try {
@@ -71,7 +71,8 @@ export async function POST(req: NextRequest) {
     const existing = await prisma.listing.findUnique({
       where: { canonicalUrl: parsed.canonicalUrl },
     });
-    const title = existing?.title || (await scrapeTitle(parsed.canonicalUrl));
+    const scraped = existing?.title || (await scrapeTitle(parsed.canonicalUrl));
+    const title = scraped || parsed.displayUrl;
     const top = await globalHighestBid();
     const highestBid = existing?.highestBid ?? 0;
     const rank = await predictedRank(

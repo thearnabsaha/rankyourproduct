@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { UTM_SOURCE } from "@/lib/site";
-import { withUtm } from "@/lib/url";
+import { listingAvatar, listingLabel, withUtm } from "@/lib/url";
 
 export type BoardListing = {
   id: string;
@@ -57,9 +57,6 @@ export default function Leaderboard({
     window.open(withUtm(item.url, UTM_SOURCE), "_blank", "noopener,noreferrer");
   };
 
-  const displayUrl = (raw: string) =>
-    raw.replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\/$/, "");
-
   if (loading && listings.length === 0) {
     return (
       <section className="w-full flex flex-col border border-[#FE4103] rounded-3xl bg-white shadow-sm overflow-hidden animate-pulse">
@@ -94,7 +91,7 @@ export default function Leaderboard({
   return (
     <section className="w-full pt-4 pb-12" aria-labelledby="board-heading">
       <h2 id="board-heading" className="sr-only">
-        Product board
+        Product and X profile board
       </h2>
       <ol className="w-full bg-white border border-foreground/[0.04] shadow-[0_8px_30px_rgb(0,0,0,0.02)] sm:rounded-3xl overflow-hidden divide-y divide-foreground/[0.04] list-none">
           {listings.map((item, index) => {
@@ -115,14 +112,14 @@ export default function Leaderboard({
                 </div>
                 <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-2xl border border-foreground/[0.04] shadow-sm flex items-center justify-center overflow-hidden">
                   <img
-                    src={`https://www.google.com/s2/favicons?domain=${item.domain}&sz=64`}
-                    alt={`${item.domain} favicon`}
-                    className="w-6 h-6 sm:w-10 sm:h-10 object-contain"
+                    src={listingAvatar(item.url, item.domain)}
+                    alt={`${listingLabel(item.url, item.domain)} avatar`}
+                    className="w-6 h-6 sm:w-10 sm:h-10 object-cover"
                   />
                 </div>
                 <div className="flex-grow min-w-0 flex flex-col justify-center">
                   <h3 className="text-base sm:text-lg font-semibold tracking-tight truncate text-black group-hover:text-[#FE4103] transition-colors">
-                    {displayUrl(item.url)}
+                    {listingLabel(item.url, item.domain)}
                   </h3>
                   {item.title ? (
                     <span className="text-xs sm:text-sm text-black block font-medium opacity-70 mt-0.5 sm:mt-1 truncate sm:whitespace-normal">

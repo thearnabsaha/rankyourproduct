@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { relativeTime } from "@/lib/time";
 import { UTM_SOURCE } from "@/lib/site";
-import { withUtm } from "@/lib/url";
+import { listingLabel, withUtm } from "@/lib/url";
 
 type Bid = {
   id: string;
@@ -62,7 +62,6 @@ export default function RecentBids() {
         </div>
       ) : (
         bids.map((bid) => {
-          const domain = bid.domain.replace(/^www\./, "");
           return (
             <div
               key={bid.id}
@@ -72,7 +71,9 @@ export default function RecentBids() {
               className="py-3 flex items-start justify-between gap-3 cursor-pointer hover:opacity-80 transition-opacity"
             >
               <div className="min-w-0">
-                <p className="text-black font-semibold truncate">{domain}</p>
+                <p className="text-black font-semibold truncate">
+                  {listingLabel(bid.url, bid.domain)}
+                </p>
                 <p className="text-black/50 text-sm">{relativeTime(bid.createdAt)}</p>
               </div>
               <p className="font-semibold tabular-nums text-black shrink-0">

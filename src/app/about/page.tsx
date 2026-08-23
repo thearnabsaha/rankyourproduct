@@ -46,8 +46,9 @@ export default function AboutPage() {
         </p>
         <p>
           <strong className="text-black">rankyourproduct</strong> is a single
-          public table. You drop a product URL, name a whole-dollar amount from
-          $1, pay, and that number is your place. Higher number, higher row.
+          public table. Drop a product URL or an X @handle, name a whole-dollar
+          amount from $1, pay, and that number is your place. Higher number,
+          higher row.
           Lower number, you still show up — just further down.
         </p>
         <h2 className="text-2xl font-display font-semibold text-black pt-6">

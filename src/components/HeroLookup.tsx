@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { listingAvatar, listingLabel } from "@/lib/url";
 
 type Preview = {
   id: string | null;
@@ -116,9 +117,9 @@ export default function HeroLookup() {
   return (
     <div className="text-center space-y-6 w-full mb-12">
       <h1 className="text-5xl sm:text-6xl md:text-[5rem] font-display font-medium leading-[1.1] tracking-tight text-black">
-        Put your product <br className="hidden sm:block" />
+        Rank your product <br className="hidden sm:block" />
         <span className="italic">
-          on the <span className="text-[#FE4103]">board.</span>
+          or your <span className="text-[#FE4103]">X profile.</span>
         </span>
       </h1>
 
@@ -133,14 +134,14 @@ export default function HeroLookup() {
               <div className="bg-white border border-foreground/[0.04] rounded-2xl p-4 sm:p-5 flex items-center gap-4 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
                 <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-2xl border border-foreground/[0.04] shadow-sm flex items-center justify-center overflow-hidden">
                   <img
-                    src={`https://www.google.com/s2/favicons?domain=${listing.domain}&sz=64`}
+                    src={listingAvatar(listing.url, listing.domain)}
                     alt=""
-                    className="w-8 h-8 object-contain"
+                    className="w-8 h-8 object-cover"
                   />
                 </div>
                 <div className="min-w-0 text-left">
                   <p className="font-semibold text-black truncate">
-                    {listing.domain}
+                    {listingLabel(listing.url, listing.domain)}
                   </p>
                   {listing.title ? (
                     <p className="text-sm text-black/60 truncate">{listing.title}</p>
@@ -239,7 +240,7 @@ export default function HeroLookup() {
                 type="text"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                placeholder="Drop in your product link..."
+                placeholder="Product URL or @handle on X..."
                 required
                 disabled={looking}
                 className="w-full px-5 py-4 text-base bg-white border border-foreground/[0.04] shadow-[0_2px_20px_-4px_rgba(0,0,0,0.03)] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#FE4103]/30 transition-all placeholder:text-black/40 text-black font-medium"
@@ -249,7 +250,7 @@ export default function HeroLookup() {
                 disabled={looking}
                 className="w-[85%] mx-auto px-6 py-3.5 bg-[#FE4103] text-white font-medium rounded-xl hover:opacity-90 active:scale-[0.98] transition-all text-base shadow-lg shadow-[#FE4103]/20 disabled:opacity-50 disabled:active:scale-100 cursor-pointer disabled:cursor-not-allowed"
               >
-                {looking ? "Checking the link..." : "Get on the board"}
+                {looking ? "Looking that up..." : "Get on the board"}
               </button>
               {error && (
                 <p className="text-red-500 text-sm text-center font-medium">

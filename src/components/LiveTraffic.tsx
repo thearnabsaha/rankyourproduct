@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { relativeTime } from "@/lib/time";
 import { UTM_SOURCE } from "@/lib/site";
-import { withUtm } from "@/lib/url";
+import { listingLabel, withUtm } from "@/lib/url";
 
 type Click = {
   id: string;
@@ -61,7 +61,6 @@ export default function LiveTraffic() {
         </div>
       ) : (
         clicks.map((click) => {
-          const domain = click.domain.replace(/^www\./, "");
           return (
             <div
               key={click.id}
@@ -72,7 +71,7 @@ export default function LiveTraffic() {
             >
               <p className="leading-tight mb-0.5">
                 <span className="text-black font-semibold truncate block text-base">
-                  {domain}
+                  {listingLabel(click.url, click.domain)}
                 </span>
                 <span className="text-black/50 text-sm">
                   visited {relativeTime(click.createdAt)}
