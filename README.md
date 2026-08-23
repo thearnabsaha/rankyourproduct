@@ -11,7 +11,7 @@ npx prisma db push
 npm run dev
 ```
 
-`DODO_MOCK=1` (default) lets Pay write a listing without Dodo keys. Turn it off and set `DODO_API_KEY` + `DODO_PRODUCT_ID` (a $1 USD product; quantity = bid dollars) before a public launch.
+`DODO_MOCK=1` (default) lets Pay write a listing without Dodo keys. For real checkout set `DODO_PAYMENTS_API_KEY`, `DODO_PAYMENTS_WEBHOOK_KEY`, and `DODO_PAYMENTS_PRODUCT_ID` (a $1 USD product; quantity = bid dollars). Webhook URL: `/api/webhook`.
 
 Footer and About use `NEXT_PUBLIC_X_HANDLE` (`thearnabsaha`) and `NEXT_PUBLIC_CONTACT_EMAIL` (`hparnab0@gmail.com`).
 
@@ -23,4 +23,4 @@ Installable on phone and desktop (Chrome / Edge / Safari Add to Home Screen). Ma
 
 ## Stack
 
-Next.js 16, Tailwind v4, Prisma, SQLite locally / Postgres on Vercel, Dodo Payments.
+Next.js 16, Tailwind v4, Prisma, SQLite locally / Postgres on Vercel, official `dodopayments` SDK + `@dodopayments/nextjs` webhooks.
