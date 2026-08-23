@@ -34,9 +34,9 @@
   --color-accent-soft: var(--accent-soft);
   --color-background: var(--canvas);
   --color-foreground: var(--ink);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-dm-sans);
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-playfair);
+  --font-display: var(--font-dm-sans);
 }
 
 html {
@@ -63,11 +63,11 @@ body {
     transparent 58%
   );
   color: var(--ink);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-dm-sans), "DM Sans", Arial, Helvetica, sans-serif;
 }
 
 .font-display {
-  font-family: var(--font-playfair), "Playfair Display", serif;
+  font-family: var(--font-dm-sans), "DM Sans", Arial, Helvetica, sans-serif;
 }
 
 a:focus-visible,
