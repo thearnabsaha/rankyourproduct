@@ -1,5 +1,6 @@
 import prisma from "@/lib/db";
 import { parseListingUrl } from "@/lib/url";
+import { uniqueSlugFor } from "@/lib/slug";
 import { scrapeTitle } from "@/lib/og";
 
 export type FulfillInput = {
@@ -25,7 +26,7 @@ export async function fulfillPayment(input: FulfillInput) {
   let canonicalUrl = "";
   let domain = input.domain || "";
   let title = (input.title || "").trim();
-  let listingId = input.listingId || "";
+  const listingId = input.listingId || "";
 
   if (listingId) {
     const listing = await prisma.listing.findUnique({ where: { id: listingId } });
@@ -51,12 +52,18 @@ export async function fulfillPayment(input: FulfillInput) {
       where: { canonicalUrl },
     });
 
+    const slug =
+      existing?.slug && existing.slug.length > 0
+        ? existing.slug
+        : await uniqueSlugFor(tx, canonicalUrl, existing?.id);
+
     const listing = existing
       ? await tx.listing.update({
           where: { id: existing.id },
           data: {
             domain,
             title: title || existing.title,
+            slug,
             totalBids: { increment: 1 },
             highestBid: amount > existing.highestBid ? amount : existing.highestBid,
           },
@@ -64,6 +71,7 @@ export async function fulfillPayment(input: FulfillInput) {
       : await tx.listing.create({
           data: {
             canonicalUrl,
+            slug,
             domain,
             title,
             highestBid: amount,

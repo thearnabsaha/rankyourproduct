@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import { relativeTime } from "@/lib/time";
 import { UTM_SOURCE } from "@/lib/site";
-import { listingLabel, withUtm } from "@/lib/url";
+import { listingLabel, listingSlugFromCanonical, withUtm } from "@/lib/url";
+import Link from "next/link";
 
 type Click = {
   id: string;
   domain: string;
   url: string;
+  slug?: string;
   createdAt: string;
 };
 
@@ -51,16 +53,24 @@ export default function LiveTraffic() {
   }
 
   return (
-    <div className="relative border border-foreground/[0.06] rounded-3xl p-5 pt-8">
-      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-3 text-base font-bold tracking-wide text-[#FE4103] uppercase whitespace-nowrap">
+    <section
+      aria-labelledby="latest-clicks"
+      className="relative border border-foreground/[0.06] rounded-3xl p-5 pt-8"
+    >
+      <h2
+        id="latest-clicks"
+        className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-3 text-base font-bold tracking-wide text-[#FE4103] uppercase whitespace-nowrap"
+      >
         Latest clicks
-      </div>
+      </h2>
       {clicks.length === 0 ? (
         <div className="text-sm text-black/50 text-center py-4">
           Nobody has opened a row yet.
         </div>
       ) : (
         clicks.map((click) => {
+          const label = listingLabel(click.url, click.domain);
+          const slug = click.slug || listingSlugFromCanonical(click.url);
           return (
             <div
               key={click.id}
@@ -71,7 +81,17 @@ export default function LiveTraffic() {
             >
               <p className="leading-tight mb-0.5">
                 <span className="text-black font-semibold truncate block text-base">
-                  {listingLabel(click.url, click.domain)}
+                  {slug ? (
+                    <Link
+                      href={`/p/${slug}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="hover:underline"
+                    >
+                      {label}
+                    </Link>
+                  ) : (
+                    label
+                  )}
                 </span>
                 <span className="text-black/50 text-sm">
                   visited {relativeTime(click.createdAt)}
@@ -81,6 +101,6 @@ export default function LiveTraffic() {
           );
         })
       )}
-    </div>
+    </section>
   );
 }

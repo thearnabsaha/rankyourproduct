@@ -46,6 +46,7 @@ export async function GET(req: NextRequest) {
       createdAt: l.createdAt.toISOString(),
       title: l.title,
       imageUrl: l.imageUrl,
+      slug: l.slug,
     })),
     pagination: {
       page,

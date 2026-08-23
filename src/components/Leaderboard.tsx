@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { UTM_SOURCE } from "@/lib/site";
-import { listingAvatar, listingLabel, withUtm } from "@/lib/url";
+import { listingAvatar, listingLabel, listingSlugFromCanonical, withUtm } from "@/lib/url";
 
 export type BoardListing = {
   id: string;
@@ -12,6 +13,7 @@ export type BoardListing = {
   totalClicks: number;
   title: string;
   imageUrl?: string;
+  slug?: string;
 };
 
 export default function Leaderboard({
@@ -28,7 +30,6 @@ export default function Leaderboard({
 
   useEffect(() => {
     let cancelled = false;
-    if (listings.length === 0) setLoading(true);
     fetch(`/api/listings?page=${page}&limit=50`)
       .then((r) => r.json())
       .then((data) => {
@@ -101,6 +102,8 @@ export default function Leaderboard({
             if (rank === 1) wash = "bg-[#FFF0E5] hover:bg-[#FFE4D6]";
             else if (rank === 2) wash = "bg-[#FFF7F0] hover:bg-[#FFF0E5]";
             else if (rank === 3) wash = "bg-[#FFFCFA] hover:bg-[#FFF7F0]";
+            const label = listingLabel(item.url, item.domain);
+            const slug = item.slug || listingSlugFromCanonical(item.url);
 
             return (
               <li
@@ -112,15 +115,30 @@ export default function Leaderboard({
                   #{rank}
                 </div>
                 <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-2xl border border-foreground/[0.04] shadow-sm flex items-center justify-center overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={listingAvatar(item.url, item.domain, item.imageUrl)}
-                    alt={`${listingLabel(item.url, item.domain)} avatar`}
+                    alt={`${label} ${item.url.includes("x.com") ? "profile photo" : "logo"}`}
+                    width={64}
+                    height={64}
+                    loading={index < 3 ? "eager" : "lazy"}
+                    decoding="async"
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="flex-grow min-w-0 flex flex-col justify-center">
                   <h3 className="text-base sm:text-lg font-semibold tracking-tight truncate text-black group-hover:text-[#FE4103] transition-colors">
-                    {listingLabel(item.url, item.domain)}
+                    {slug ? (
+                      <Link
+                        href={`/p/${slug}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="hover:underline"
+                      >
+                        {label}
+                      </Link>
+                    ) : (
+                      label
+                    )}
                   </h3>
                   {item.title ? (
                     <span className="text-xs sm:text-sm text-black block font-medium opacity-70 mt-0.5 sm:mt-1 truncate sm:whitespace-normal">
@@ -143,19 +161,23 @@ export default function Leaderboard({
       {pages > 1 && (
         <div className="flex justify-center items-center gap-2 mt-8">
           <button
+            type="button"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-3 py-1.5 rounded-lg border border-foreground/[0.06] text-sm disabled:opacity-40"
+            aria-label="Previous page of listings"
+            className="min-h-10 min-w-10 px-3 py-1.5 rounded-lg border border-foreground/[0.06] text-sm disabled:opacity-40"
           >
             Prev
           </button>
-          <span className="text-sm text-black/50 tabular-nums">
+          <span className="text-sm text-black/50 tabular-nums" aria-live="polite">
             {page} / {pages}
           </span>
           <button
+            type="button"
             onClick={() => setPage((p) => Math.min(pages, p + 1))}
             disabled={page === pages}
-            className="px-3 py-1.5 rounded-lg border border-foreground/[0.06] text-sm disabled:opacity-40"
+            aria-label="Next page of listings"
+            className="min-h-10 min-w-10 px-3 py-1.5 rounded-lg border border-foreground/[0.06] text-sm disabled:opacity-40"
           >
             Next
           </button>

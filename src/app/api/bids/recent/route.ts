@@ -11,7 +11,7 @@ export async function GET() {
       where: { status: "succeeded" },
       orderBy: { createdAt: "desc" },
       take: 12,
-      include: { listing: { select: { domain: true, canonicalUrl: true } } },
+      include: { listing: { select: { domain: true, canonicalUrl: true, slug: true } } },
     });
 
     return NextResponse.json({
@@ -20,6 +20,7 @@ export async function GET() {
         amount: b.amount,
         domain: b.listing.domain,
         url: b.listing.canonicalUrl,
+        slug: b.listing.slug,
         createdAt: b.createdAt.toISOString(),
       })),
       source: "db",

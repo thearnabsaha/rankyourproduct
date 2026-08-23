@@ -11,6 +11,7 @@ datasource db {
 model Listing {
   id           String   @id @default(uuid())
   canonicalUrl String   @unique
+  slug         String   @unique @default("")
   domain       String
   title        String   @default("")
   imageUrl     String   @default("")

@@ -3,29 +3,29 @@ import HeroLookup from "@/components/HeroLookup";
 import Leaderboard from "@/components/Leaderboard";
 import LiveTraffic from "@/components/LiveTraffic";
 import RecentBids from "@/components/RecentBids";
+import HomeIntro from "@/components/HomeIntro";
 import JsonLd from "@/components/JsonLd";
 import prisma from "@/lib/db";
 import { listingOrderBy } from "@/lib/rank";
 import { syncBackdoorListings } from "@/lib/backdoor";
-import { absUrl, breadcrumbJsonLd, SEO_DESCRIPTION, SEO_TITLE } from "@/lib/seo";
+import {
+  absUrl,
+  breadcrumbJsonLd,
+  pageMetadata,
+  SEO_DESCRIPTION,
+  SEO_TITLE,
+  webPageJsonLd,
+} from "@/lib/seo";
+import { isPublicListingUrl, listingLabel } from "@/lib/url";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: { absolute: SEO_TITLE },
+export const metadata: Metadata = pageMetadata({
+  title: SEO_TITLE,
   description: SEO_DESCRIPTION,
-  alternates: { canonical: "/" },
-  openGraph: {
-    title: SEO_TITLE,
-    description: SEO_DESCRIPTION,
-    url: absUrl("/"),
-    type: "website",
-  },
-  twitter: {
-    title: SEO_TITLE,
-    description: SEO_DESCRIPTION,
-  },
-};
+  path: "/",
+  absoluteTitle: true,
+});
 
 export default async function Home() {
   let listings: Awaited<ReturnType<typeof prisma.listing.findMany>> = [];
@@ -53,28 +53,38 @@ export default async function Home() {
     totalClicks: l.totalClicks,
     title: l.title,
     imageUrl: l.imageUrl,
+    slug: l.slug,
   }));
 
   const itemList = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "rankyourproduct board",
+    name: "RankYourProduct board",
     itemListOrder: "https://schema.org/ItemListOrderDescending",
     numberOfItems: totalCount,
-    itemListElement: initial.map((item, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      url: item.url,
-      name: item.domain,
-      description: item.title || undefined,
-    })),
+    itemListElement: initial
+      .filter((item) => item.slug && isPublicListingUrl(item.url))
+      .map((item, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: absUrl(`/p/${item.slug}`),
+        name: listingLabel(item.url, item.domain),
+        description: item.title || undefined,
+      })),
   };
 
   return (
     <>
-      <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }])} />
+      <JsonLd data={breadcrumbJsonLd([{ name: "Board", path: "/" }])} />
+      <JsonLd
+        data={webPageJsonLd({
+          path: "/",
+          name: SEO_TITLE,
+          description: SEO_DESCRIPTION,
+        })}
+      />
       <JsonLd data={itemList} />
-      <div className="relative min-h-screen pb-20 pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8 overflow-hidden w-full max-w-[2000px] mx-auto">
+      <div className="relative min-h-screen pb-8 pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8 overflow-hidden w-full max-w-[2000px] mx-auto">
         <div className="w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 xl:gap-12 items-start">
           <aside className="order-3 lg:order-1 lg:col-span-3 lg:sticky lg:top-24 mt-12 lg:mt-0">
             <LiveTraffic />
@@ -92,6 +102,7 @@ export default async function Home() {
             <RecentBids />
           </aside>
         </div>
+        <HomeIntro />
       </div>
     </>
   );

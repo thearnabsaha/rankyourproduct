@@ -155,6 +155,35 @@ export function xHandleFromUrl(canonicalUrl: string): string | null {
   }
 }
 
+export function isPublicListingUrl(canonicalUrl: string): boolean {
+  try {
+    const host = new URL(canonicalUrl).hostname.replace(/^www\./, "").toLowerCase();
+    if (!host) return false;
+    if (host === "localhost" || host === "127.0.0.1" || host === "::1") return false;
+    if (host.endsWith(".local") || host.endsWith(".internal")) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function listingSlugFromCanonical(canonicalUrl: string): string {
+  const handle = xHandleFromUrl(canonicalUrl);
+  if (handle) return `x-${handle.toLowerCase()}`;
+  try {
+    const url = new URL(canonicalUrl);
+    const raw = `${url.hostname}${url.pathname === "/" ? "" : url.pathname}`;
+    const slug = raw
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 80);
+    return slug || "listing";
+  } catch {
+    return "listing";
+  }
+}
+
 export function listingLabel(canonicalUrl: string, domain?: string): string {
   const handle = xHandleFromUrl(canonicalUrl);
   if (handle) return `@${handle}`;

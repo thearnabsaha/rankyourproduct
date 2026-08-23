@@ -1,5 +1,5 @@
 import prisma from "@/lib/db";
-import { parseListingUrl, xHandleFromUrl } from "@/lib/url";
+import { listingSlugFromCanonical, parseListingUrl, xHandleFromUrl } from "@/lib/url";
 import { BACKDOOR_LISTINGS } from "@/data/backdoor-listings";
 import { fetchXProfile } from "@/lib/x-profile";
 
@@ -29,6 +29,7 @@ export async function syncBackdoorListings(force = false) {
       where: { canonicalUrl: parsed.canonicalUrl },
       create: {
         canonicalUrl: parsed.canonicalUrl,
+        slug: listingSlugFromCanonical(parsed.canonicalUrl),
         domain: parsed.domain,
         title,
         imageUrl,
@@ -39,6 +40,7 @@ export async function syncBackdoorListings(force = false) {
         pinOrder,
       },
       update: {
+        slug: listingSlugFromCanonical(parsed.canonicalUrl),
         domain: parsed.domain,
         title,
         ...(imageUrl ? { imageUrl } : {}),
@@ -95,4 +97,19 @@ export async function syncBackdoorListings(force = false) {
     },
     data: { pinned: false, pinOrder: 0 },
   });
+
+  const missingSlug = await prisma.listing.findMany({
+    where: { slug: "" },
+  });
+  for (const row of missingSlug) {
+    const slug = listingSlugFromCanonical(row.canonicalUrl) || row.id.slice(0, 8);
+    try {
+      await prisma.listing.update({ where: { id: row.id }, data: { slug } });
+    } catch {
+      await prisma.listing.update({
+        where: { id: row.id },
+        data: { slug: `${slug}-${row.id.slice(0, 6)}` },
+      });
+    }
+  }
 }

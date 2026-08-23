@@ -134,9 +134,12 @@ export default function HeroLookup() {
             <div className="space-y-6">
               <div className="bg-white border border-foreground/[0.04] rounded-2xl p-4 sm:p-5 flex items-center gap-4 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
                 <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-2xl border border-foreground/[0.04] shadow-sm flex items-center justify-center overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={listingAvatar(listing.url, listing.domain, listing.imageUrl)}
                     alt=""
+                    width={56}
+                    height={56}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -154,7 +157,8 @@ export default function HeroLookup() {
                     setListing(null);
                     setError(null);
                   }}
-                  className="ml-auto text-sm text-black/40 hover:text-black"
+                  className="ml-auto text-sm text-black/40 hover:text-black min-h-10 px-2"
+                  aria-label="Choose a different product or profile"
                 >
                   Change
                 </button>
@@ -162,9 +166,9 @@ export default function HeroLookup() {
 
               <div className="relative rounded-3xl border border-foreground/[0.04] bg-white px-6 py-8 sm:px-10 flex flex-col items-center gap-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
                 <div className="text-center space-y-1 relative z-10">
-                  <h4 className="text-xs font-bold text-[#FE4103] uppercase tracking-widest">
+                  <p className="text-xs font-bold text-[#FE4103] uppercase tracking-widest">
                     Pick your amount
-                  </h4>
+                  </p>
                   {listing.highestBid > 0 && (
                     <p className="text-xs text-[#FE4103] font-medium">
                       Lowest you can pay now: ${minBid}
@@ -184,6 +188,8 @@ export default function HeroLookup() {
                   <div className="flex items-center text-5xl sm:text-6xl font-semibold tracking-tighter text-black">
                     <span className="text-[#FE4103] mr-1 select-none">$</span>
                     <input
+                      id="bid-amount"
+                      aria-label="Bid amount in US dollars"
                       type="number"
                       min={minBid}
                       value={amount || ""}
@@ -237,11 +243,16 @@ export default function HeroLookup() {
             </div>
           ) : (
             <form onSubmit={lookup} className="flex flex-col space-y-4">
+              <label htmlFor="listing-url" className="sr-only">
+                Product URL or X handle
+              </label>
               <input
+                id="listing-url"
                 type="text"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="Product URL or @handle on X..."
+                autoComplete="url"
                 required
                 disabled={looking}
                 className="w-full px-5 py-4 text-base bg-white border border-foreground/[0.04] shadow-[0_2px_20px_-4px_rgba(0,0,0,0.03)] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#FE4103]/30 transition-all placeholder:text-black/40 text-black font-medium"

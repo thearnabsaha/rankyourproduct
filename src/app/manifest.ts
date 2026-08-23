@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "rankyourproduct",
     short_name: "rankyourproduct",
     description:
-      "Drop in a product URL, pay a whole-dollar amount, and that number is your place on the table.",
+      "Drop in a product URL or X handle, pay a whole-dollar amount, and that number is your place on the table.",
     start_url: "/",
     scope: "/",
     display: "standalone",

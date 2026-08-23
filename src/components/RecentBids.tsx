@@ -3,13 +3,15 @@
 import { useEffect, useState } from "react";
 import { relativeTime } from "@/lib/time";
 import { UTM_SOURCE } from "@/lib/site";
-import { listingLabel, withUtm } from "@/lib/url";
+import { listingLabel, listingSlugFromCanonical, withUtm } from "@/lib/url";
+import Link from "next/link";
 
 type Bid = {
   id: string;
   amount: number;
   domain: string;
   url: string;
+  slug?: string;
   createdAt: string;
 };
 
@@ -52,16 +54,24 @@ export default function RecentBids() {
   }
 
   return (
-    <div className="relative border border-foreground/[0.06] rounded-3xl p-5 pt-8">
-      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-3 text-base font-bold tracking-wide text-[#FE4103] uppercase whitespace-nowrap">
+    <section
+      aria-labelledby="latest-payments"
+      className="relative border border-foreground/[0.06] rounded-3xl p-5 pt-8"
+    >
+      <h2
+        id="latest-payments"
+        className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-3 text-base font-bold tracking-wide text-[#FE4103] uppercase whitespace-nowrap"
+      >
         Latest payments
-      </div>
+      </h2>
       {bids.length === 0 ? (
         <div className="text-sm text-black/50 text-center py-4">
           No payments on the board yet.
         </div>
       ) : (
         bids.map((bid) => {
+          const label = listingLabel(bid.url, bid.domain);
+          const slug = bid.slug || listingSlugFromCanonical(bid.url);
           return (
             <div
               key={bid.id}
@@ -72,7 +82,17 @@ export default function RecentBids() {
             >
               <div className="min-w-0">
                 <p className="text-black font-semibold truncate">
-                  {listingLabel(bid.url, bid.domain)}
+                  {slug ? (
+                    <Link
+                      href={`/p/${slug}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="hover:underline"
+                    >
+                      {label}
+                    </Link>
+                  ) : (
+                    label
+                  )}
                 </p>
                 <p className="text-black/50 text-sm">{relativeTime(bid.createdAt)}</p>
               </div>
@@ -83,6 +103,6 @@ export default function RecentBids() {
           );
         })
       )}
-    </div>
+    </section>
   );
 }

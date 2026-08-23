@@ -1,30 +1,32 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { CONTACT_EMAIL } from "@/lib/site";
 import JsonLd from "@/components/JsonLd";
-import { absUrl, breadcrumbJsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd, pageMetadata, webPageJsonLd } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Rules",
+export const metadata: Metadata = pageMetadata({
+  title: "Ranking rules",
   description:
-    "How rankyourproduct orders the table, what URLs are allowed, and how payments claim a row.",
-  alternates: { canonical: "/rules" },
-  openGraph: {
-    title: "Rules — rankyourproduct",
-    description:
-      "How the table is ordered, what URLs are allowed, and how payments claim a row.",
-    url: absUrl("/rules"),
-    type: "website",
-  },
-};
+    "How RankYourProduct orders the table, what product URLs and X profiles are allowed, and how payments claim a row.",
+  path: "/rules",
+});
 
 export default function RulesPage() {
   return (
-    <div className="max-w-[680px] mx-auto px-6 py-20">
+    <article className="max-w-[680px] mx-auto px-6 py-20">
       <JsonLd
         data={breadcrumbJsonLd([
-          { name: "Home", path: "/" },
+          { name: "Board", path: "/" },
           { name: "Rules", path: "/rules" },
         ])}
+      />
+      <JsonLd
+        data={webPageJsonLd({
+          path: "/rules",
+          name: "Ranking rules",
+          description:
+            "How the table is ordered, what URLs are allowed, and how payments claim a row.",
+        })}
       />
       <JsonLd
         data={{
@@ -62,9 +64,16 @@ export default function RulesPage() {
         How this board works
       </h1>
       <p className="text-[17px] leading-8 text-black/75 mb-10">
-        rankyourproduct is an open table of product URLs and X profiles. The
+        RankYourProduct is an open table of product URLs and X profiles. The
         place you sit is the largest amount you have actually paid. That is the
-        whole ranking.
+        whole ranking. A shorter walkthrough is on{" "}
+        <Link
+          href="/how-it-works"
+          className="text-[#FE4103] font-semibold hover:underline"
+        >
+          how RankYourProduct works
+        </Link>
+        .
       </p>
 
       <section className="space-y-4 mb-10">
@@ -145,6 +154,14 @@ export default function RulesPage() {
           </li>
         </ul>
       </section>
-    </div>
+
+      <p className="mt-12 text-[17px] leading-8 text-black/75">
+        Ready?{" "}
+        <Link href="/" className="text-[#FE4103] font-semibold hover:underline">
+          List a product on the public board
+        </Link>
+        .
+      </p>
+    </article>
   );
 }

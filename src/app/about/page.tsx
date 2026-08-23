@@ -2,37 +2,39 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CONTACT_EMAIL, X_HANDLE } from "@/lib/site";
 import JsonLd from "@/components/JsonLd";
-import { absUrl, breadcrumbJsonLd } from "@/lib/seo";
+import { absUrl, breadcrumbJsonLd, pageMetadata, webPageJsonLd } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "About",
+export const metadata: Metadata = pageMetadata({
+  title: "About RankYourProduct",
   description:
-    "Why rankyourproduct exists: a public table where a product's place is the amount paid, starting at $1.",
-  alternates: { canonical: "/about" },
-  openGraph: {
-    title: "About rankyourproduct",
-    description:
-      "A public table where a product's place is the amount paid, starting at $1.",
-    url: absUrl("/about"),
-    type: "website",
-  },
-};
+    "Why RankYourProduct exists: a public table where a product or X profile's place is the amount paid, starting at $1. No algorithm, no waitlist.",
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (
-    <div className="max-w-[680px] mx-auto px-6 py-20">
+    <article className="max-w-[680px] mx-auto px-6 py-20">
       <JsonLd
         data={breadcrumbJsonLd([
-          { name: "Home", path: "/" },
+          { name: "Board", path: "/" },
           { name: "About", path: "/about" },
         ])}
+      />
+      <JsonLd
+        data={webPageJsonLd({
+          path: "/about",
+          name: "About RankYourProduct",
+          description:
+            "A public table where a product's place is the amount paid, starting at $1.",
+        })}
       />
       <JsonLd
         data={{
           "@context": "https://schema.org",
           "@type": "AboutPage",
-          name: "About rankyourproduct",
+          name: "About RankYourProduct",
           url: absUrl("/about"),
+          isPartOf: { "@id": "https://rankyourproduct.lol/#website" },
         }}
       />
       <h1 className="text-4xl sm:text-5xl font-display font-bold tracking-tight text-black mb-6">
@@ -45,11 +47,10 @@ export default function AboutPage() {
           reviewer with a form.
         </p>
         <p>
-          <strong className="text-black">rankyourproduct</strong> is a single
+          <strong className="text-black">RankYourProduct</strong> is a single
           public table. Drop a product URL or an X @handle, name a whole-dollar
           amount from $1, pay, and that number is your place. Higher number,
-          higher row.
-          Lower number, you still show up — just further down.
+          higher row. Lower number, you still show up — just further down.
         </p>
         <h2 className="text-2xl font-display font-semibold text-black pt-6">
           One number. No backstage.
@@ -63,11 +64,28 @@ export default function AboutPage() {
           Same URL again with a larger amount moves you up. You pay the new
           total, not a leftover. Rows stay until someone spends more.
         </p>
+        <p>
+          New here? Start with{" "}
+          <Link
+            href="/how-it-works"
+            className="text-[#FE4103] font-semibold hover:underline"
+          >
+            how listing and rank work
+          </Link>{" "}
+          or the{" "}
+          <Link
+            href="/rules"
+            className="text-[#FE4103] font-semibold hover:underline"
+          >
+            ranking rules
+          </Link>
+          .
+        </p>
         <p className="font-medium text-black pt-4">Want a row?</p>
         <p>
           Head to the{" "}
           <Link href="/" className="text-[#FE4103] font-semibold hover:underline">
-            front page
+            public product board
           </Link>{" "}
           and put a number on your link.
         </p>
@@ -95,6 +113,6 @@ export default function AboutPage() {
           .
         </p>
       </div>
-    </div>
+    </article>
   );
 }

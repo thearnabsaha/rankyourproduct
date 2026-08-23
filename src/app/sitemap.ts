@@ -1,16 +1,24 @@
 import type { MetadataRoute } from "next";
+import prisma from "@/lib/db";
 import { absUrl } from "@/lib/seo";
+import { isPublicListingUrl } from "@/lib/url";
 
 export const dynamic = "force-dynamic";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  return [
+  const pages: MetadataRoute.Sitemap = [
     {
       url: absUrl("/"),
       lastModified: now,
       changeFrequency: "hourly",
       priority: 1,
+    },
+    {
+      url: absUrl("/how-it-works"),
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
     },
     {
       url: absUrl("/about"),
@@ -25,4 +33,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
   ];
+
+  try {
+    const listings = await prisma.listing.findMany({
+      where: { highestBid: { gt: 0 }, slug: { not: "" } },
+      select: { slug: true, updatedAt: true, canonicalUrl: true },
+    });
+    for (const listing of listings) {
+      if (!isPublicListingUrl(listing.canonicalUrl)) continue;
+      pages.push({
+        url: absUrl(`/p/${listing.slug}`),
+        lastModified: listing.updatedAt,
+        changeFrequency: "daily",
+        priority: 0.7,
+      });
+    }
+  } catch {
+    /* db may be cold */
+  }
+
+  return pages;
 }

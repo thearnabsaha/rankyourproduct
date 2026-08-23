@@ -15,6 +15,8 @@ npm run dev
 
 Footer and About use `NEXT_PUBLIC_X_HANDLE` (`thearnabsaha`) and `NEXT_PUBLIC_CONTACT_EMAIL` (`hparnab0@gmail.com`).
 
+Optional SEO/analytics: `NEXT_PUBLIC_GSC_VERIFICATION` (Search Console HTML-tag token) and `NEXT_PUBLIC_GA_ID` (GA4). Neither is loaded unless set.
+
 Hardcoded top listings live in `src/data/backdoor-listings.ts`. Edit that file to pin a URL at #1 (or #2, #3, …) without paying. Refresh the homepage, or hit `/api/admin/backdoor?secret=...`.
 
 ## Domain (rankyourproduct.lol)

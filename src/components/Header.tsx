@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -78,10 +79,13 @@ export default function Header({ initial }: { initial?: PresenceSnap }) {
           href="/"
           className="flex items-center gap-3 group transition-opacity hover:opacity-80 relative z-10 shrink-0"
         >
-          <img
+          <Image
             src="/logo.svg"
-            alt="rankyourproduct logo"
+            alt=""
+            width={40}
+            height={40}
             className="w-10 h-10 rounded-lg object-contain shadow-sm"
+            priority
           />
           <span className="font-sans font-bold text-lg sm:text-xl lg:text-2xl tracking-tighter text-[#FE4103]">
             rankyourproduct
@@ -95,7 +99,13 @@ export default function Header({ initial }: { initial?: PresenceSnap }) {
         </div>
 
         <div className="flex items-center gap-3 sm:gap-8 relative z-10">
-          <nav className="flex items-center gap-3 sm:gap-6 text-sm font-medium">
+          <nav aria-label="Primary" className="flex items-center gap-3 sm:gap-6 text-sm font-medium">
+            <Link
+              href="/how-it-works"
+              className="text-foreground/60 hover:text-foreground transition-colors hidden md:inline"
+            >
+              How it works
+            </Link>
             <Link
               href="/about"
               className="text-foreground/60 hover:text-foreground transition-colors"
@@ -109,7 +119,10 @@ export default function Header({ initial }: { initial?: PresenceSnap }) {
               Rules
             </Link>
           </nav>
-          <div className="flex items-center gap-3 sm:gap-4 bg-foreground/[0.03] border border-foreground/[0.04] rounded-lg px-4 py-2 shadow-sm select-none">
+          <div
+            className="flex items-center gap-3 sm:gap-4 bg-foreground/[0.03] border border-foreground/[0.04] rounded-lg px-4 py-2 shadow-sm select-none"
+            aria-label={`Collected $${revenue}. ${live} live visitors. ${total} total visitors.`}
+          >
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />

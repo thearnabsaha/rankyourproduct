@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Payment received",
-  robots: { index: false, follow: false },
-  alternates: { canonical: "/success" },
-};
+  description: "Your RankYourProduct listing is being written to the board.",
+  path: "/success",
+  index: false,
+});
 
 export default async function SuccessPage({
   searchParams,

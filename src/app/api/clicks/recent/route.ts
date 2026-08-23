@@ -8,6 +8,7 @@ export async function GET() {
     const clicks = await prisma.click.findMany({
       orderBy: { createdAt: "desc" },
       take: 12,
+      include: { listing: { select: { slug: true } } },
     });
 
     return NextResponse.json({
@@ -15,6 +16,7 @@ export async function GET() {
         id: c.id,
         domain: c.domain,
         url: c.url,
+        slug: c.listing?.slug || "",
         createdAt: c.createdAt.toISOString(),
       })),
       source: "db",

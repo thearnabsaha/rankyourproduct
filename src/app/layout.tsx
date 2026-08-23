@@ -5,24 +5,34 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PwaRegister from "@/components/PwaRegister";
 import JsonLd from "@/components/JsonLd";
-import { CANONICAL_HOST, SEO_DESCRIPTION, SEO_TITLE, webAppJsonLd, websiteJsonLd } from "@/lib/seo";
+import {
+  CANONICAL_HOST,
+  organizationJsonLd,
+  SEO_DESCRIPTION,
+  SEO_TITLE,
+  websiteJsonLd,
+} from "@/lib/seo";
 import { X_HANDLE } from "@/lib/site";
 import { readPresence } from "@/lib/presence";
+import Analytics from "@/components/Analytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
   style: ["normal", "italic"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -38,20 +48,20 @@ export const metadata: Metadata = {
   publisher: "Arnab Saha",
   category: "business",
   keywords: [
+    "product discovery",
+    "startup directory",
     "pay to rank",
-    "product leaderboard",
-    "product directory",
-    "startup listing",
-    "rankyourproduct",
+    "list your product",
+    "X profile ranking",
   ],
-  alternates: {
-    canonical: "/",
-  },
+  verification: process.env.NEXT_PUBLIC_GSC_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION }
+    : undefined,
   openGraph: {
     title: SEO_TITLE,
     description: SEO_DESCRIPTION,
     url: CANONICAL_HOST,
-    siteName: "rankyourproduct",
+    siteName: "RankYourProduct",
     locale: "en_US",
     type: "website",
   },
@@ -116,11 +126,18 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white text-black">
+        <JsonLd data={organizationJsonLd()} />
         <JsonLd data={websiteJsonLd()} />
-        <JsonLd data={webAppJsonLd()} />
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-black focus:shadow"
+        >
+          Skip to content
+        </a>
+        <Analytics />
         <PwaRegister />
         <Header initial={initial} />
-        <main id="main" className="flex-1">
+        <main id="main" tabIndex={-1} className="flex-1 outline-none">
           {children}
         </main>
         <Footer />
