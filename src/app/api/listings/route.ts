@@ -1,0 +1,87 @@
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/db";
+import { parseListingUrl } from "@/lib/url";
+import { scrapeTitle } from "@/lib/og";
+import { globalHighestBid, listingOrderBy, predictedRank } from "@/lib/rank";
+import { syncBackdoorListings } from "@/lib/backdoor";
+
+export const dynamic = "force-dynamic";
+
+export async function GET(req: NextRequest) {
+  const page = Math.max(1, Number(req.nextUrl.searchParams.get("page") || 1));
+  const limit = Math.min(
+    50,
+    Math.max(1, Number(req.nextUrl.searchParams.get("limit") || 50)),
+  );
+  await syncBackdoorListings();
+  const where = { highestBid: { gt: 0 } };
+  const totalCount = await prisma.listing.count({ where });
+  const listings = await prisma.listing.findMany({
+    where,
+    orderBy: listingOrderBy,
+    skip: (page - 1) * limit,
+    take: limit,
+  });
+
+  return NextResponse.json({
+    listings: listings.map((l) => ({
+      id: l.id,
+      url: l.canonicalUrl,
+      domain: l.domain,
+      highestBid: l.highestBid,
+      totalBids: l.totalBids,
+      totalClicks: l.totalClicks,
+      createdAt: l.createdAt.toISOString(),
+      title: l.title,
+    })),
+    pagination: {
+      page,
+      limit,
+      totalCount,
+      totalPages: Math.max(1, Math.ceil(totalCount / limit)),
+    },
+  });
+}
+
+export async function POST(req: NextRequest) {
+  let body: { url?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Need a product link" }, { status: 400 });
+  }
+
+  if (!body.url?.trim()) {
+    return NextResponse.json({ error: "Need a product link" }, { status: 400 });
+  }
+
+  try {
+    const parsed = parseListingUrl(body.url);
+    const existing = await prisma.listing.findUnique({
+      where: { canonicalUrl: parsed.canonicalUrl },
+    });
+    const title = existing?.title || (await scrapeTitle(parsed.canonicalUrl));
+    const top = await globalHighestBid();
+    const highestBid = existing?.highestBid ?? 0;
+    const rank = await predictedRank(
+      highestBid > 0 ? highestBid : 1,
+      existing?.id,
+    );
+
+    return NextResponse.json({
+      listing: {
+        id: existing?.id ?? null,
+        url: parsed.canonicalUrl,
+        domain: parsed.domain,
+        title,
+        highestBid,
+        totalBids: existing?.totalBids ?? 0,
+        rank,
+        globalHighestBid: top,
+      },
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Invalid URL";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
+}

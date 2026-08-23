@@ -1,0 +1,5 @@
+#!/bin/sh
+# Push the current branch after every local commit.
+branch=$(git symbolic-ref --short HEAD 2>/dev/null) || exit 0
+git remote get-url origin >/dev/null 2>&1 || exit 0
+git push -u origin "$branch"

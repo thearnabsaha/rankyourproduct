@@ -1,0 +1,99 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { CONTACT_EMAIL, X_HANDLE } from "@/lib/site";
+import JsonLd from "@/components/JsonLd";
+import { absUrl, breadcrumbJsonLd } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: "About",
+  description:
+    "Why rankyourproduct exists: a public table where a product's place is the amount paid, starting at $1.",
+  alternates: { canonical: "/about" },
+  openGraph: {
+    title: "About rankyourproduct",
+    description:
+      "A public table where a product's place is the amount paid, starting at $1.",
+    url: absUrl("/about"),
+    type: "website",
+  },
+};
+
+export default function AboutPage() {
+  return (
+    <div className="max-w-[680px] mx-auto px-6 py-20">
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "About", path: "/about" },
+        ])}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          name: "About rankyourproduct",
+          url: absUrl("/about"),
+        }}
+      />
+      <h1 className="text-4xl sm:text-5xl font-display font-bold tracking-tight text-black mb-6">
+        Visibility should not depend on a secret score.
+      </h1>
+      <div className="space-y-5 text-[17px] leading-8 text-black/75">
+        <p>
+          Builders ship tools every day that never get a real look. Feeds hide
+          them. Search is a guessing game. Most directories sit behind a
+          reviewer with a form.
+        </p>
+        <p>
+          <strong className="text-black">rankyourproduct</strong> is a single
+          public table. You drop a product URL, name a whole-dollar amount from
+          $1, pay, and that number is your place. Higher number, higher row.
+          Lower number, you still show up — just further down.
+        </p>
+        <h2 className="text-2xl font-display font-semibold text-black pt-6">
+          One number. No backstage.
+        </h2>
+        <p>
+          Nobody curates the order. There is no vote, no waitlist, and no
+          “for you” ranking. Clicks and fresh payments sit next to the table
+          so you can see the room moving.
+        </p>
+        <p>
+          Same URL again with a larger amount moves you up. You pay the new
+          total, not a leftover. Rows stay until someone spends more.
+        </p>
+        <p className="font-medium text-black pt-4">Want a row?</p>
+        <p>
+          Head to the{" "}
+          <Link href="/" className="text-[#FE4103] font-semibold hover:underline">
+            front page
+          </Link>{" "}
+          and put a number on your link.
+        </p>
+
+        <h2 className="text-2xl font-display font-semibold text-black pt-6">
+          Who runs this
+        </h2>
+        <p>
+          Built and run by{" "}
+          <a
+            href={`https://x.com/${X_HANDLE}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#FE4103] font-semibold hover:underline"
+          >
+            @{X_HANDLE}
+          </a>
+          . Questions, payment issues, or anything else — email{" "}
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="text-[#FE4103] font-semibold hover:underline"
+          >
+            {CONTACT_EMAIL}
+          </a>
+          .
+        </p>
+      </div>
+    </div>
+  );
+}

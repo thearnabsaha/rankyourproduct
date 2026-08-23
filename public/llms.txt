@@ -1,0 +1,10 @@
+# rankyourproduct
+
+> A public product table at https://rankyourproduct.lol
+> Drop in a product URL, pay a whole-dollar amount from $1, and that number is your row.
+
+- Home: https://rankyourproduct.lol/
+- About: https://rankyourproduct.lol/about
+- Rules: https://rankyourproduct.lol/rules
+- Contact: hparnab0@gmail.com
+- X: https://x.com/thearnabsaha

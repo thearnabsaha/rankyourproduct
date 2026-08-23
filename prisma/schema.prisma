@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Listing {
+  id           String   @id @default(uuid())
+  canonicalUrl String   @unique
+  domain       String
+  title        String   @default("")
+  highestBid   Int      @default(0)
+  totalBids    Int      @default(0)
+  totalClicks  Int      @default(0)
+  pinned       Boolean  @default(false)
+  pinOrder     Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  bids         Bid[]
+  clicks       Click[]
+
+  @@index([pinned, pinOrder, highestBid, createdAt])
+}
+
+model Bid {
+  id        String   @id @default(uuid())
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id])
+  amount    Int
+  paymentId String   @unique
+  status    String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model Click {
+  id        String   @id @default(uuid())
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id])
+  domain    String
+  url       String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model Visitor {
+  sessionId  String   @id
+  lastSeenAt DateTime
+  createdAt  DateTime @default(now())
+}
+
+model Stat {
+  id                String @id @default("global")
+  totalRevenueCents Int    @default(0)
+  totalVisitors     Int    @default(0)
+}
