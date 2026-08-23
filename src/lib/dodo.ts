@@ -52,7 +52,7 @@ async function createCheckoutSession(environment: DodoEnv, input: {
       },
     ],
     return_url: dodoReturnUrl(),
-    metadata: input.metadata,
+    metadata: { ...input.metadata, source: "rankyourproduct" },
     customization: { theme: "dark" },
     feature_flags: { redirect_immediately: true },
   });

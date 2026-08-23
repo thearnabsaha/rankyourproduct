@@ -2,6 +2,7 @@ import { BACKDOOR_LISTINGS } from "@/data/backdoor-listings";
 import { syncBackdoorListings } from "@/lib/backdoor";
 import prisma from "@/lib/db";
 import { getDodoClient, isMockPayments } from "@/lib/dodo";
+import { dodoProductId } from "@/lib/dodo-env";
 import { fulfillPayment } from "@/lib/fulfill";
 import { SITE_DOMAIN } from "@/lib/site";
 import { isOwnSiteUrl, parseListingUrl } from "@/lib/url";
@@ -27,12 +28,21 @@ export async function fulfillFromDodoPayment(payment: {
   payment_id?: string;
   total_amount?: number;
   metadata?: Record<string, unknown> | null;
-  product_cart?: Array<{ quantity?: number }> | null;
+  product_cart?: Array<{ product_id?: string; quantity?: number }> | null;
 }): Promise<void> {
   const paymentId = payment.payment_id || "";
   if (!paymentId || IGNORED_PAYMENT_IDS.has(paymentId)) return;
 
+  const ours = dodoProductId();
+  const cart = payment.product_cart || [];
+  if (ours && cart.length > 0 && !cart.some((item) => item.product_id === ours)) {
+    return;
+  }
+
   const meta = (payment.metadata || {}) as Record<string, unknown>;
+  const source = metaString(meta, "source");
+  if (source && source !== "rankyourproduct") return;
+
   const url = metaString(meta, "url");
   const listingId = metaString(meta, "listingId");
   const domain = metaString(meta, "domain");
@@ -78,9 +88,11 @@ export async function syncPaidListingsFromDodo(force = false): Promise<void> {
   const client = getDodoClient();
   const importPaid = async () => {
     let count = 0;
+    const productId = dodoProductId();
     for await (const payment of client.payments.list({
       status: "succeeded",
       page_size: 50,
+      ...(productId ? { product_id: productId } : {}),
     })) {
       try {
         await fulfillFromDodoPayment(payment);
@@ -113,30 +125,11 @@ export async function pruneUnpaidListings(): Promise<void> {
     BACKDOOR_LISTINGS.map((item) => parseListingUrl(item.url).canonicalUrl),
   );
 
-  const paid = await prisma.bid.findMany({
-    where: {
-      status: "succeeded",
-      NOT: [
-        { paymentId: { startsWith: "backdoor:" } },
-        { paymentId: { startsWith: "mock_" } },
-      ],
-    },
-    select: { listingId: true, paymentId: true },
-  });
-
-  const paidListingIds = new Set(
-    paid
-      .filter((row) => !IGNORED_PAYMENT_IDS.has(row.paymentId))
-      .map((row) => row.listingId),
-  );
-
   const all = await prisma.listing.findMany({
     select: { id: true, canonicalUrl: true },
   });
   const removeIds = all
-    .filter(
-      (row) => !allowed.has(row.canonicalUrl) && !paidListingIds.has(row.id),
-    )
+    .filter((row) => !allowed.has(row.canonicalUrl))
     .map((row) => row.id);
 
   if (removeIds.length === 0) return;
@@ -147,10 +140,10 @@ export async function pruneUnpaidListings(): Promise<void> {
 
 export async function syncBoard(): Promise<void> {
   await syncBackdoorListings();
+  await pruneUnpaidListings();
   try {
-    await syncPaidListingsFromDodo();
+    await syncPaidListingsFromDodo(true);
   } catch {
     /* Dodo may be slow */
   }
-  await pruneUnpaidListings();
 }
