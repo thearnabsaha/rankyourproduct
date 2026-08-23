@@ -32,11 +32,13 @@ function isUnauthorized(err: unknown): boolean {
 }
 
 function isMerchantNotLive(err: unknown): boolean {
-  return /merchant_not_live|not live/i.test(errorText(err));
+  return /merchant_not_live|not live|not enabled for merchant/i.test(
+    errorText(err),
+  );
 }
 
 const NOT_LIVE_MESSAGE =
-  "Dodo has not enabled live payments on this account yet. In the Dodo dashboard turn on Test mode (toggle at the top), create a new test API key, $1 product, and webhook, then put those test values in Vercel with DODO_PAYMENTS_ENVIRONMENT=test_mode. Or finish Dodo account verification to take live cards.";
+  "Dodo live mode is not enabled on this account yet. In Vercel set DODO_PAYMENTS_ENVIRONMENT=test_mode and use the test API key, test product ID, and test webhook. Finish Dodo Verification, then switch to live keys."
 
 async function createCheckoutSession(environment: DodoEnv, input: {
   amount: number;
