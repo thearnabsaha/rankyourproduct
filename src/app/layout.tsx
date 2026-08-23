@@ -7,6 +7,7 @@ import PwaRegister from "@/components/PwaRegister";
 import JsonLd from "@/components/JsonLd";
 import { CANONICAL_HOST, SEO_DESCRIPTION, SEO_TITLE, webAppJsonLd, websiteJsonLd } from "@/lib/seo";
 import { X_HANDLE } from "@/lib/site";
+import { readPresence } from "@/lib/presence";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -101,7 +102,14 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  let initial = { liveVisitors: 0, totalVisitors: 0, totalRevenue: 0 };
+  try {
+    initial = await readPresence();
+  } catch {
+    /* db may be cold on Vercel */
+  }
+
   return (
     <html
       lang="en"
@@ -111,7 +119,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <JsonLd data={websiteJsonLd()} />
         <JsonLd data={webAppJsonLd()} />
         <PwaRegister />
-        <Header />
+        <Header initial={initial} />
         <main id="main" className="flex-1">
           {children}
         </main>

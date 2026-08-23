@@ -1,26 +1,12 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/db";
-import { collectedRevenueDollars, liveVisitorCount } from "@/lib/stats";
+import { readPresence } from "@/lib/presence";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const [stat, liveVisitors, totalRevenue] = await Promise.all([
-      prisma.stat.upsert({
-        where: { id: "global" },
-        create: { id: "global" },
-        update: {},
-      }),
-      liveVisitorCount(),
-      collectedRevenueDollars(),
-    ]);
-
-    return NextResponse.json({
-      totalVisitors: stat.totalVisitors,
-      totalRevenue,
-      liveVisitors,
-    });
+    const presence = await readPresence();
+    return NextResponse.json(presence);
   } catch {
     return NextResponse.json({
       totalVisitors: 0,

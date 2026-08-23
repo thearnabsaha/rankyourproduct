@@ -5,10 +5,16 @@ import { useEffect, useState } from "react";
 
 const SESSION_KEY = "ryp_session";
 
-export default function Header() {
-  const [revenue, setRevenue] = useState(0);
-  const [live, setLive] = useState(0);
-  const [total, setTotal] = useState(0);
+type PresenceSnap = {
+  liveVisitors: number;
+  totalVisitors: number;
+  totalRevenue: number;
+};
+
+export default function Header({ initial }: { initial?: PresenceSnap }) {
+  const [revenue, setRevenue] = useState(initial?.totalRevenue ?? 0);
+  const [live, setLive] = useState(initial?.liveVisitors ?? 0);
+  const [total, setTotal] = useState(initial?.totalVisitors ?? 0);
 
   useEffect(() => {
     let sessionId = "";
@@ -22,37 +28,46 @@ export default function Header() {
       sessionId = crypto.randomUUID();
     }
 
-    const load = () => {
-      fetch("/api/visitors")
-        .then((r) => r.json())
-        .then((d) => {
-          if (typeof d.totalVisitors === "number") setTotal(d.totalVisitors);
-          if (typeof d.totalRevenue === "number") setRevenue(d.totalRevenue);
-          if (typeof d.liveVisitors === "number") setLive(d.liveVisitors);
-        })
-        .catch(() => {});
+    const apply = (d: Partial<PresenceSnap> & { sessionId?: string }) => {
+      if (typeof d.liveVisitors === "number") setLive(d.liveVisitors);
+      if (typeof d.totalVisitors === "number") {
+        setTotal((prev) => Math.max(prev, d.totalVisitors as number));
+      }
+      if (typeof d.totalRevenue === "number") setRevenue(d.totalRevenue);
+      if (d.sessionId) {
+        try {
+          localStorage.setItem(SESSION_KEY, d.sessionId);
+        } catch {
+          /* ignore */
+        }
+      }
     };
 
     const ping = () => {
+      if (typeof document !== "undefined" && document.hidden) return;
       fetch("/api/visitors/ping", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sessionId }),
+        credentials: "same-origin",
       })
         .then((r) => r.json())
         .then((d) => {
-          if (typeof d.liveVisitors === "number") setLive(d.liveVisitors);
+          if (d?.sessionId) sessionId = d.sessionId;
+          apply(d);
         })
         .catch(() => {});
     };
 
-    load();
     ping();
-    const a = setInterval(load, 20000);
-    const b = setInterval(ping, 20000);
+    const beat = setInterval(ping, 25000);
+    const onVis = () => {
+      if (!document.hidden) ping();
+    };
+    document.addEventListener("visibilitychange", onVis);
     return () => {
-      clearInterval(a);
-      clearInterval(b);
+      clearInterval(beat);
+      document.removeEventListener("visibilitychange", onVis);
     };
   }, []);
 

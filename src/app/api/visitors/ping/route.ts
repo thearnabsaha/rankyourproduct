@@ -1,47 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/db";
+import {
+  COOKIE_NAME,
+  heartbeat,
+  isBot,
+  sessionCookie,
+  sessionIdFromRequest,
+} from "@/lib/presence";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
-  let sessionId = "";
-  try {
-    const body = (await req.json()) as { sessionId?: string };
-    sessionId = body.sessionId || "";
-  } catch {
-    sessionId = "";
+  if (isBot(req.headers.get("user-agent"))) {
+    return NextResponse.json({
+      liveVisitors: 0,
+      totalVisitors: 0,
+      totalRevenue: 0,
+      ignored: true,
+    });
   }
 
-  if (!sessionId) {
-    sessionId = crypto.randomUUID();
-  }
-
-  const now = new Date();
   try {
-    const existing = await prisma.visitor.findUnique({
-      where: { sessionId },
-    });
-
-    await prisma.visitor.upsert({
-      where: { sessionId },
-      create: { sessionId, lastSeenAt: now },
-      update: { lastSeenAt: now },
-    });
-
-    if (!existing) {
-      await prisma.stat.upsert({
-        where: { id: "global" },
-        create: { id: "global", totalVisitors: 1 },
-        update: { totalVisitors: { increment: 1 } },
-      });
+    const incoming = await sessionIdFromRequest(req);
+    const presence = await heartbeat(incoming);
+    const res = NextResponse.json(presence);
+    if (presence.sessionId !== req.cookies.get(COOKIE_NAME)?.value) {
+      const cookie = sessionCookie(presence.sessionId);
+      res.cookies.set(cookie);
     }
-
-    const liveVisitors = await prisma.visitor.count({
-      where: { lastSeenAt: { gte: new Date(Date.now() - 60_000) } },
-    });
-
-    return NextResponse.json({ liveVisitors, sessionId });
+    return res;
   } catch {
-    return NextResponse.json({ liveVisitors: 0, sessionId });
+    return NextResponse.json({
+      liveVisitors: 0,
+      totalVisitors: 0,
+      totalRevenue: 0,
+    });
   }
 }
