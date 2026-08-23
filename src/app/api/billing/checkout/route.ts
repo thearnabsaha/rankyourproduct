@@ -85,16 +85,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ checkoutUrl });
   } catch (err) {
-    const raw = err instanceof Error ? err.message : "Failed to create checkout";
-    const lower = raw.toLowerCase();
-    let message = raw;
-    if (lower.includes("unauthorized") || raw.includes("401")) {
-      message =
-        "Dodo rejected the API key. Test keys only work in test_mode; live keys only work in live_mode. Create a key in the same Dodo mode as DODO_PAYMENTS_ENVIRONMENT.";
-    } else if (lower.includes("merchant_not_live") || lower.includes("not live")) {
-      message =
-        "This Dodo account is not enabled for live payments yet. Use Test mode keys, or finish Dodo account verification for live.";
-    }
+    const message =
+      err instanceof Error ? err.message : "Failed to create checkout";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }

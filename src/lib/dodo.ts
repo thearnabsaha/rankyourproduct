@@ -7,22 +7,59 @@ import {
   dodoWebhookKey,
 } from "@/lib/dodo-env";
 
+type DodoEnv = "test_mode" | "live_mode";
+
 export function isMockPayments(): boolean {
   if (process.env.DODO_MOCK === "1") return true;
   return !dodoApiKey() || !dodoProductId();
 }
 
-let client: DodoPayments | null = null;
+function makeClient(environment: DodoEnv) {
+  return new DodoPayments({
+    bearerToken: dodoApiKey(),
+    environment,
+    webhookKey: dodoWebhookKey() || undefined,
+  });
+}
 
-export function dodoClient(): DodoPayments {
-  if (!client) {
-    client = new DodoPayments({
-      bearerToken: dodoApiKey(),
-      environment: dodoEnvironment,
-      webhookKey: dodoWebhookKey() || undefined,
-    });
+function errorText(err: unknown): string {
+  if (err instanceof Error) return `${err.name} ${err.message}`;
+  return String(err);
+}
+
+function isUnauthorized(err: unknown): boolean {
+  return /401|unauthorized/i.test(errorText(err));
+}
+
+function isMerchantNotLive(err: unknown): boolean {
+  return /merchant_not_live|not live/i.test(errorText(err));
+}
+
+const NOT_LIVE_MESSAGE =
+  "Dodo has not enabled live payments on this account yet. In the Dodo dashboard turn on Test mode (toggle at the top), create a new test API key, $1 product, and webhook, then put those test values in Vercel with DODO_PAYMENTS_ENVIRONMENT=test_mode. Or finish Dodo account verification to take live cards.";
+
+async function createCheckoutSession(environment: DodoEnv, input: {
+  amount: number;
+  metadata: Record<string, string>;
+}) {
+  const session = await makeClient(environment).checkoutSessions.create({
+    product_cart: [
+      {
+        product_id: dodoProductId(),
+        quantity: input.amount,
+      },
+    ],
+    return_url: dodoReturnUrl(),
+    metadata: input.metadata,
+    customization: { theme: "dark" },
+    feature_flags: { redirect_immediately: true },
+  });
+
+  if (!session.checkout_url) {
+    throw new Error("Dodo did not return a checkout URL");
   }
-  return client;
+
+  return { checkoutUrl: session.checkout_url };
 }
 
 export async function createDodoCheckout(input: {
@@ -41,22 +78,25 @@ export async function createDodoCheckout(input: {
     };
   }
 
-  const session = await dodoClient().checkoutSessions.create({
-    product_cart: [
-      {
-        product_id: dodoProductId(),
-        quantity: input.amount,
-      },
-    ],
-    return_url: dodoReturnUrl(),
-    metadata: input.metadata,
-    customization: { theme: "light" },
-    feature_flags: { redirect_immediately: true },
-  });
+  const preferred: DodoEnv = dodoEnvironment;
+  const fallback: DodoEnv =
+    preferred === "live_mode" ? "test_mode" : "live_mode";
 
-  if (!session.checkout_url) {
-    throw new Error("Dodo did not return a checkout URL");
+  try {
+    return await createCheckoutSession(preferred, input);
+  } catch (err) {
+    if (isMerchantNotLive(err)) {
+      throw new Error(NOT_LIVE_MESSAGE);
+    }
+    if (!isUnauthorized(err)) throw err;
+
+    try {
+      return await createCheckoutSession(fallback, input);
+    } catch (err2) {
+      if (isMerchantNotLive(err2) || isUnauthorized(err2)) {
+        throw new Error(NOT_LIVE_MESSAGE);
+      }
+      throw err2;
+    }
   }
-
-  return { checkoutUrl: session.checkout_url };
 }
