@@ -47,7 +47,7 @@ export default function RecentBids() {
     return (
       <div className="animate-pulse flex flex-col gap-4">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="h-16 bg-black/[0.02] rounded-2xl w-full" />
+          <div key={i} className="h-16 bg-raised rounded-[10px] w-full" />
         ))}
       </div>
     );
@@ -56,16 +56,16 @@ export default function RecentBids() {
   return (
     <section
       aria-labelledby="latest-payments"
-      className="relative border border-foreground/[0.06] rounded-3xl p-5 pt-8"
+      className="relative surface-card p-5 pt-8"
     >
       <h2
         id="latest-payments"
-        className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-3 text-base font-bold tracking-wide text-[#FE4103] uppercase whitespace-nowrap"
+        className="absolute -top-3 left-1/2 -translate-x-1/2 bg-canvas px-3 text-sm font-bold tracking-wide text-accent uppercase whitespace-nowrap"
       >
         Latest payments
       </h2>
       {bids.length === 0 ? (
-        <div className="text-sm text-black/50 text-center py-4">
+        <div className="text-sm text-ink-mute text-center py-4">
           No payments on the board yet.
         </div>
       ) : (
@@ -78,15 +78,15 @@ export default function RecentBids() {
               onClick={() =>
                 window.open(withUtm(bid.url, UTM_SOURCE), "_blank", "noopener,noreferrer")
               }
-              className="py-3 flex items-start justify-between gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+              className="py-3 flex items-start justify-between gap-3 cursor-pointer hover:translate-x-0.5 transition-transform duration-[180ms]"
             >
               <div className="min-w-0">
-                <p className="text-black font-semibold truncate">
+                <p className="text-ink font-semibold truncate">
                   {slug ? (
                     <Link
                       href={`/p/${slug}`}
                       onClick={(e) => e.stopPropagation()}
-                      className="hover:underline"
+                      className="hover:text-accent hover:underline underline-offset-3 transition-colors duration-[180ms]"
                     >
                       {label}
                     </Link>
@@ -94,9 +94,9 @@ export default function RecentBids() {
                     label
                   )}
                 </p>
-                <p className="text-black/50 text-sm">{relativeTime(bid.createdAt)}</p>
+                <p className="text-ink-mute text-sm">{relativeTime(bid.createdAt)}</p>
               </div>
-              <p className="font-semibold tabular-nums text-black shrink-0">
+              <p className="font-semibold tabular-nums text-ink shrink-0">
                 ${bid.amount}
               </p>
             </div>

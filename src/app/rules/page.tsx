@@ -86,37 +86,37 @@ export default function RulesPage() {
           ],
         }}
       />
-      <h1 className="text-4xl sm:text-5xl font-display font-bold tracking-tight text-black mb-6">
+      <h1 className="text-4xl sm:text-5xl font-display font-bold tracking-tight text-ink mb-6">
         How this board works
       </h1>
-      <p className="text-[17px] leading-8 text-black/75 mb-10">
+      <p className="text-[17px] leading-8 text-ink-soft mb-10">
         RankYourProduct is a public board for founders. You are not applying to
         a directory. You are not waiting on votes. You pay a whole-dollar
         amount, and that number is your place on the table.
       </p>
 
       <section className="mb-12">
-        <h2 className="text-2xl font-display font-semibold text-black mb-4">
+        <h2 className="text-2xl font-display font-semibold text-ink mb-4">
           Get listed in three steps
         </h2>
         <ol className="space-y-8">
           {steps.map((step) => (
             <li key={step.n}>
-              <h3 className="text-lg font-semibold text-black">
-                <span className="text-[#FE4103] mr-2">{step.n}.</span>
+              <h3 className="text-lg font-semibold text-ink">
+                <span className="text-accent mr-2">{step.n}.</span>
                 {step.title}
               </h3>
-              <p className="mt-2 text-[17px] leading-8 text-black/75">{step.body}</p>
+              <p className="mt-2 text-[17px] leading-8 text-ink-soft">{step.body}</p>
             </li>
           ))}
         </ol>
       </section>
 
       <section className="mb-12">
-        <h2 className="text-2xl font-display font-semibold text-black mb-4">
+        <h2 className="text-2xl font-display font-semibold text-ink mb-4">
           Who it is for
         </h2>
-        <p className="text-[17px] leading-8 text-black/75">
+        <p className="text-[17px] leading-8 text-ink-soft">
           Indie hackers launching a tool, teams that want a public rank they can
           explain, and people who want their X profile seen next to products —
           not buried in a feed.
@@ -124,13 +124,13 @@ export default function RulesPage() {
       </section>
 
       <section className="space-y-4 mb-10">
-        <h2 className="text-2xl font-display font-semibold text-black">
+        <h2 className="text-2xl font-display font-semibold text-ink">
           Order on the table
         </h2>
-        <ul className="list-disc pl-5 space-y-3 text-[17px] leading-8 text-black/75">
+        <ul className="list-disc pl-5 space-y-3 text-[17px] leading-8 text-ink-soft">
           <li>
             Amounts are whole US dollars. The cheapest way onto the table is{" "}
-            <strong className="text-black">$1</strong>.
+            <strong className="text-ink">$1</strong>.
           </li>
           <li>
             A bid under the current leader still goes live. You land wherever
@@ -142,7 +142,7 @@ export default function RulesPage() {
           </li>
           <li>
             To climb, submit the same URL or @handle with a larger amount. You pay that{" "}
-            <strong className="text-black">new total in full</strong>, not the
+            <strong className="text-ink">new total in full</strong>, not the
             gap.
           </li>
           <li>
@@ -153,10 +153,10 @@ export default function RulesPage() {
       </section>
 
       <section className="space-y-4 mb-10">
-        <h2 className="text-2xl font-display font-semibold text-black">
+        <h2 className="text-2xl font-display font-semibold text-ink">
           What belongs here
         </h2>
-        <ul className="list-disc pl-5 space-y-3 text-[17px] leading-8 text-black/75">
+        <ul className="list-disc pl-5 space-y-3 text-[17px] leading-8 text-ink-soft">
           <li>
             A product site, a startup page, a portfolio URL, or an X profile
             (@handle, x.com/you, or twitter.com/you).
@@ -176,10 +176,10 @@ export default function RulesPage() {
       </section>
 
       <section className="space-y-4 mb-10">
-        <h2 className="text-2xl font-display font-semibold text-black">
+        <h2 className="text-2xl font-display font-semibold text-ink">
           Paying, and if something breaks
         </h2>
-        <ul className="list-disc pl-5 space-y-3 text-[17px] leading-8 text-black/75">
+        <ul className="list-disc pl-5 space-y-3 text-[17px] leading-8 text-ink-soft">
           <li>
             The row updates when the payment actually clears — not just when
             the browser comes back to this site.
@@ -193,7 +193,7 @@ export default function RulesPage() {
             If a successful charge never shows up, write to{" "}
             <a
               href={`mailto:${CONTACT_EMAIL}`}
-              className="text-[#FE4103] font-semibold hover:underline"
+              className="link-accent"
             >
               {CONTACT_EMAIL}
             </a>{" "}
@@ -203,47 +203,47 @@ export default function RulesPage() {
       </section>
 
       <section className="mb-12">
-        <h2 className="text-2xl font-display font-semibold text-black mb-4">
+        <h2 className="text-2xl font-display font-semibold text-ink mb-4">
           Common questions
         </h2>
         <div className="space-y-6">
           <div>
-            <h3 className="font-semibold text-black">How do I list a product?</h3>
-            <p className="mt-1 text-[17px] leading-8 text-black/75">
+            <h3 className="font-semibold text-ink">How do I list a product?</h3>
+            <p className="mt-1 text-[17px] leading-8 text-ink-soft">
               Open the{" "}
-              <Link href="/" className="text-[#FE4103] font-semibold hover:underline">
+              <Link href="/" className="link-accent">
                 public product board
               </Link>
               , paste a URL or @handle, pick an amount from $1, and pay.
             </p>
           </div>
           <div>
-            <h3 className="font-semibold text-black">What does rank mean?</h3>
-            <p className="mt-1 text-[17px] leading-8 text-black/75">
+            <h3 className="font-semibold text-ink">What does rank mean?</h3>
+            <p className="mt-1 text-[17px] leading-8 text-ink-soft">
               Rank is the highest whole-dollar amount successfully paid for that
               listing. Nothing else.
             </p>
           </div>
           <div>
-            <h3 className="font-semibold text-black">Can I list an X profile?</h3>
-            <p className="mt-1 text-[17px] leading-8 text-black/75">
+            <h3 className="font-semibold text-ink">Can I list an X profile?</h3>
+            <p className="mt-1 text-[17px] leading-8 text-ink-soft">
               Yes. @handle, x.com/you, and twitter.com/you are the same row.
             </p>
           </div>
           <div>
-            <h3 className="font-semibold text-black">Are bids refundable?</h3>
-            <p className="mt-1 text-[17px] leading-8 text-black/75">
+            <h3 className="font-semibold text-ink">Are bids refundable?</h3>
+            <p className="mt-1 text-[17px] leading-8 text-ink-soft">
               No. Bids are final. If someone pays more, you slide down.
             </p>
           </div>
         </div>
       </section>
 
-      <p className="text-[17px] leading-8 text-black/75 mb-8">
+      <p className="text-[17px] leading-8 text-ink-soft mb-8">
         More background is on{" "}
         <Link
           href="/about"
-          className="text-[#FE4103] font-semibold hover:underline"
+          className="link-accent"
         >
           why RankYourProduct exists
         </Link>
@@ -252,7 +252,7 @@ export default function RulesPage() {
 
       <Link
         href="/"
-        className="inline-flex px-6 py-3.5 bg-[#FE4103] text-white font-medium rounded-xl hover:opacity-90"
+        className="btn-primary px-6 py-3.5"
       >
         Rank your product from $1
       </Link>

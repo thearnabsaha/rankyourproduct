@@ -30,7 +30,7 @@ export default function VisitListing({
       target="_blank"
       rel="noopener noreferrer"
       onClick={record}
-      className="inline-flex justify-center px-6 py-3.5 bg-[#FE4103] text-white font-medium rounded-xl hover:opacity-90"
+      className="btn-primary px-6 py-3.5"
     >
       Visit {label}
     </a>

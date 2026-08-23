@@ -117,23 +117,23 @@ export default function HeroLookup() {
 
   return (
     <div className="text-center space-y-6 w-full mb-12">
-      <h1 className="text-5xl sm:text-6xl md:text-[5rem] font-display font-medium leading-[1.1] tracking-tight text-black">
+      <h1 className="text-5xl sm:text-6xl md:text-[5rem] font-display font-medium leading-[1.08] tracking-tight text-ink">
         Rank your product <br className="hidden sm:block" />
         <span className="italic">
-          or your <span className="text-[#FE4103]">X profile.</span>
+          or your <span className="text-accent">X profile.</span>
         </span>
       </h1>
 
       <div className="flex flex-col items-center space-y-8">
-        <p className="text-lg text-[#FE4103] font-medium tracking-wide uppercase">
+        <p className="text-sm sm:text-base text-accent font-semibold tracking-[0.18em] uppercase">
           A row starts at $1
         </p>
 
         <div className="w-full max-w-3xl mx-auto space-y-8">
           {listing ? (
             <div className="space-y-6">
-              <div className="bg-white border border-foreground/[0.04] rounded-2xl p-4 sm:p-5 flex items-center gap-4 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-                <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-2xl border border-foreground/[0.04] shadow-sm flex items-center justify-center overflow-hidden">
+              <div className="surface-card p-4 sm:p-5 flex items-center gap-4">
+                <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 bg-raised rounded-[10px] border border-line flex items-center justify-center overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={listingAvatar(listing.url, listing.domain, listing.imageUrl)}
@@ -144,11 +144,11 @@ export default function HeroLookup() {
                   />
                 </div>
                 <div className="min-w-0 text-left">
-                  <p className="font-semibold text-black truncate">
+                  <p className="font-semibold text-ink truncate">
                     {listingLabel(listing.url, listing.domain)}
                   </p>
                   {listing.title ? (
-                    <p className="text-sm text-black/60 truncate">{listing.title}</p>
+                    <p className="text-sm text-ink-soft truncate">{listing.title}</p>
                   ) : null}
                 </div>
                 <button
@@ -157,20 +157,20 @@ export default function HeroLookup() {
                     setListing(null);
                     setError(null);
                   }}
-                  className="ml-auto text-sm text-black/40 hover:text-black min-h-10 px-2"
+                  className="ml-auto text-sm text-ink-mute hover:text-ink min-h-10 px-2 transition-colors duration-[180ms]"
                   aria-label="Choose a different product or profile"
                 >
                   Change
                 </button>
               </div>
 
-              <div className="relative rounded-3xl border border-foreground/[0.04] bg-white px-6 py-8 sm:px-10 flex flex-col items-center gap-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+              <div className="relative surface-card px-6 py-8 sm:px-10 flex flex-col items-center gap-6">
                 <div className="text-center space-y-1 relative z-10">
-                  <p className="text-xs font-bold text-[#FE4103] uppercase tracking-widest">
+                  <p className="text-xs font-bold text-accent uppercase tracking-widest">
                     Pick your amount
                   </p>
                   {listing.highestBid > 0 && (
-                    <p className="text-xs text-[#FE4103] font-medium">
+                    <p className="text-xs text-ink-soft font-medium">
                       Lowest you can pay now: ${minBid}
                     </p>
                   )}
@@ -181,12 +181,12 @@ export default function HeroLookup() {
                     type="button"
                     aria-label="Decrease price"
                     onClick={() => setAmount((v) => Math.max(minBid, v - 1))}
-                    className="w-12 h-12 rounded-2xl bg-white border border-foreground/[0.04] shadow-sm flex items-center justify-center text-xl font-bold text-[#FE4103] hover:bg-[#FE4103]/5 active:scale-95 transition-all cursor-pointer"
+                    className="w-12 h-12 rounded-[10px] bg-raised border border-line flex items-center justify-center text-xl font-bold text-accent hover:bg-inset active:translate-y-px transition-all duration-[180ms] cursor-pointer"
                   >
                     −
                   </button>
-                  <div className="flex items-center text-5xl sm:text-6xl font-semibold tracking-tighter text-black">
-                    <span className="text-[#FE4103] mr-1 select-none">$</span>
+                  <div className="flex items-center text-5xl sm:text-6xl font-semibold tracking-tighter text-ink">
+                    <span className="text-accent mr-1 select-none">$</span>
                     <input
                       id="bid-amount"
                       aria-label="Bid amount in US dollars"
@@ -201,32 +201,32 @@ export default function HeroLookup() {
                       onBlur={() => {
                         if (amount < minBid || Number.isNaN(amount)) setAmount(minBid);
                       }}
-                      className="w-32 sm:w-48 bg-transparent text-center focus:outline-none border-none p-0 m-0"
+                      className="w-32 sm:w-48 bg-transparent text-center focus:outline-none border-none p-0 m-0 text-ink"
                     />
                   </div>
                   <button
                     type="button"
                     aria-label="Increase price"
                     onClick={() => setAmount((v) => (v || 0) + 1)}
-                    className="w-12 h-12 rounded-2xl bg-white border border-foreground/[0.04] shadow-sm flex items-center justify-center text-xl font-bold text-[#FE4103] hover:bg-[#FE4103]/5 active:scale-95 transition-all cursor-pointer"
+                    className="w-12 h-12 rounded-[10px] bg-raised border border-line flex items-center justify-center text-xl font-bold text-accent hover:bg-inset active:translate-y-px transition-all duration-[180ms] cursor-pointer"
                   >
                     +
                   </button>
                 </div>
 
                 <div className="flex flex-col items-center space-y-5 pt-3 w-full relative z-10">
-                  <div className="flex items-center w-full justify-between px-5 py-3 bg-white border border-foreground/[0.04] rounded-xl shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
-                    <span className="text-[#FE4103] font-bold text-xs uppercase tracking-wider">
+                  <div className="flex items-center w-full justify-between px-5 py-3 bg-raised border border-line rounded-[10px]">
+                    <span className="text-accent font-bold text-xs uppercase tracking-wider">
                       Rank
                     </span>
-                    <span className="text-xl font-semibold text-black">
+                    <span className="text-xl font-semibold text-ink tabular-nums">
                       {rankLoading ? "..." : `#${rank ?? "?"}`}
                     </span>
                   </div>
                 </div>
 
                 {error && (
-                  <p className="text-red-500 text-sm text-center font-medium relative z-10">
+                  <p className="text-red-400 text-sm text-center font-medium relative z-10">
                     {error}
                   </p>
                 )}
@@ -235,7 +235,7 @@ export default function HeroLookup() {
                   type="button"
                   onClick={pay}
                   disabled={paying || amount < minBid}
-                  className="w-full px-6 py-4 bg-[#FE4103] text-white font-medium rounded-xl hover:opacity-90 active:scale-[0.98] transition-all text-base shadow-lg shadow-[#FE4103]/20 disabled:opacity-50 disabled:active:scale-100 relative z-10 cursor-pointer disabled:cursor-not-allowed"
+                  className="btn-primary w-full px-6 py-4 text-base relative z-10 cursor-pointer disabled:cursor-not-allowed"
                 >
                   {paying ? "Opening checkout..." : `Pay $${amount} to go live`}
                 </button>
@@ -255,17 +255,17 @@ export default function HeroLookup() {
                 autoComplete="url"
                 required
                 disabled={looking}
-                className="w-full px-5 py-4 text-base bg-white border border-foreground/[0.04] shadow-[0_2px_20px_-4px_rgba(0,0,0,0.03)] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#FE4103]/30 transition-all placeholder:text-black/40 text-black font-medium"
+                className="w-full px-5 py-4 text-base bg-surface border border-line rounded-[10px] focus:outline-none focus:border-accent/50 transition-colors duration-[180ms] placeholder:text-ink-mute text-ink font-medium"
               />
               <button
                 type="submit"
                 disabled={looking}
-                className="w-[85%] mx-auto px-6 py-3.5 bg-[#FE4103] text-white font-medium rounded-xl hover:opacity-90 active:scale-[0.98] transition-all text-base shadow-lg shadow-[#FE4103]/20 disabled:opacity-50 disabled:active:scale-100 cursor-pointer disabled:cursor-not-allowed"
+                className="btn-primary w-[85%] mx-auto px-6 py-3.5 text-base cursor-pointer disabled:cursor-not-allowed"
               >
                 {looking ? "Looking that up..." : "Get on the board"}
               </button>
               {error && (
-                <p className="text-red-500 text-sm text-center font-medium">
+                <p className="text-red-400 text-sm text-center font-medium">
                   {error}
                 </p>
               )}

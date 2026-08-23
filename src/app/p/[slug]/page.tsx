@@ -128,8 +128,8 @@ export default async function ListingPage({
         })}
       />
 
-      <nav aria-label="Breadcrumb" className="text-sm text-black/50 mb-6">
-        <Link href="/" className="text-[#FE4103] font-semibold hover:underline">
+      <nav aria-label="Breadcrumb" className="text-sm text-ink-mute mb-6">
+        <Link href="/" className="link-accent">
           Public product board
         </Link>
         <span aria-hidden="true"> / </span>
@@ -137,7 +137,7 @@ export default async function ListingPage({
       </nav>
 
       <div className="flex items-start gap-5 mb-8">
-        <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-2xl border border-foreground/[0.06] shadow-sm overflow-hidden">
+        <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 bg-raised rounded-[10px] border border-line overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={avatar}
@@ -148,27 +148,27 @@ export default async function ListingPage({
           />
         </div>
         <div className="min-w-0">
-          <p className="text-xs uppercase tracking-wider text-[#FE4103] font-bold mb-1">
+          <p className="text-xs uppercase tracking-wider text-accent font-bold mb-1">
             {kind}
           </p>
-          <h1 className="text-3xl sm:text-4xl font-display font-bold tracking-tight text-black">
+          <h1 className="text-3xl sm:text-4xl font-display font-bold tracking-tight text-ink">
             {label}
           </h1>
           {listing.title ? (
-            <p className="mt-2 text-[17px] leading-7 text-black/70">{listing.title}</p>
+            <p className="mt-2 text-[17px] leading-7 text-ink-soft">{listing.title}</p>
           ) : null}
         </div>
       </div>
 
       <dl className="grid grid-cols-2 gap-4 mb-10">
-        <div className="rounded-2xl border border-foreground/[0.06] p-4">
-          <dt className="text-xs uppercase tracking-wider text-[#FE4103] font-bold">
+        <div className="rounded-[10px] border border-line bg-surface p-4">
+          <dt className="text-xs uppercase tracking-wider text-accent font-bold">
             Current bid
           </dt>
           <dd className="text-2xl font-semibold tabular-nums mt-1">${listing.highestBid}</dd>
         </div>
-        <div className="rounded-2xl border border-foreground/[0.06] p-4">
-          <dt className="text-xs uppercase tracking-wider text-[#FE4103] font-bold">
+        <div className="rounded-[10px] border border-line bg-surface p-4">
+          <dt className="text-xs uppercase tracking-wider text-accent font-bold">
             Clicks from this board
           </dt>
           <dd className="text-2xl font-semibold tabular-nums mt-1">
@@ -177,21 +177,18 @@ export default async function ListingPage({
         </div>
       </dl>
 
-      <h2 className="text-xl font-display font-semibold text-black mb-3">
+      <h2 className="text-xl font-display font-semibold text-ink mb-3">
         About this listing
       </h2>
-      <p className="text-[17px] leading-8 text-black/75 mb-8">
+      <p className="text-[17px] leading-8 text-ink-soft mb-8">
         {handle
           ? `${label} is an X profile listed on RankYourProduct. Rank is the highest whole-dollar amount paid for this handle — not followers, and not an algorithm.`
           : `${label} is listed on RankYourProduct, a public board where founders pay to rank products. The current bid is $${listing.highestBid}.`}
       </p>
-      <p className="text-[17px] leading-8 text-black/75 mb-8">
+      <p className="text-[17px] leading-8 text-ink-soft mb-8">
         Anyone can take a higher row by paying a larger whole-dollar amount for
         the same {handle ? "handle" : "URL"}. See the{" "}
-        <Link
-          href="/rules"
-          className="text-[#FE4103] font-semibold hover:underline"
-        >
+        <Link href="/rules" className="link-accent">
           ranking rules
         </Link>
         .
@@ -206,7 +203,7 @@ export default async function ListingPage({
         />
         <Link
           href="/"
-          className="inline-flex justify-center px-6 py-3.5 border border-foreground/[0.08] font-medium rounded-xl hover:bg-black/[0.02]"
+          className="btn-ghost px-6 py-3.5"
         >
           List your product from $1
         </Link>
@@ -216,7 +213,7 @@ export default async function ListingPage({
         <section className="mt-14" aria-labelledby="also-on-the-board">
           <h2
             id="also-on-the-board"
-            className="text-xl font-display font-semibold text-black mb-4"
+            className="text-xl font-display font-semibold text-ink mb-4"
           >
             Also on the board
           </h2>
@@ -227,11 +224,11 @@ export default async function ListingPage({
                 <li key={row.id}>
                   <Link
                     href={`/p/${row.slug}`}
-                    className="text-[#FE4103] font-semibold hover:underline"
+                    className="link-accent"
                   >
                     {other}
                   </Link>
-                  <span className="text-black/50"> · ${row.highestBid}</span>
+                  <span className="text-ink-mute"> · ${row.highestBid}</span>
                 </li>
               );
             })}

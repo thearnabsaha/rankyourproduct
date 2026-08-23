@@ -1,4 +1,4 @@
-const CACHE = "ryp-pwa-v2";
+const CACHE = "ryp-pwa-v3";
 const PRECACHE = [
   "/",
   "/logo.svg",

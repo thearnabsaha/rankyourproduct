@@ -15,8 +15,8 @@ export default function TwitterImage() {
           flexDirection: "column",
           justifyContent: "center",
           padding: "72px",
-          background: "#ffffff",
-          color: "#111111",
+          background: "#141413",
+          color: "#FAF9F5",
         }}
       >
         <div
@@ -31,8 +31,8 @@ export default function TwitterImage() {
             style={{
               width: 72,
               height: 72,
-              borderRadius: 16,
-              background: "#FE4103",
+              borderRadius: 12,
+              background: "#E15A2B",
               display: "flex",
               alignItems: "flex-end",
               justifyContent: "center",
@@ -40,15 +40,15 @@ export default function TwitterImage() {
               paddingBottom: 14,
             }}
           >
-            <div style={{ width: 10, height: 18, background: "#fff", borderRadius: 2 }} />
-            <div style={{ width: 10, height: 28, background: "#fff", borderRadius: 2 }} />
-            <div style={{ width: 10, height: 40, background: "#fff", borderRadius: 2 }} />
+            <div style={{ width: 10, height: 18, background: "#FAF9F5", borderRadius: 2 }} />
+            <div style={{ width: 10, height: 28, background: "#FAF9F5", borderRadius: 2 }} />
+            <div style={{ width: 10, height: 40, background: "#FAF9F5", borderRadius: 2 }} />
           </div>
           <div
             style={{
               fontSize: 42,
               fontWeight: 800,
-              color: "#FE4103",
+              color: "#FAF9F5",
               letterSpacing: -1.5,
             }}
           >
@@ -70,7 +70,7 @@ export default function TwitterImage() {
           style={{
             marginTop: 28,
             fontSize: 28,
-            color: "#FE4103",
+            color: "#E15A2B",
             fontWeight: 600,
             letterSpacing: 1,
           }}

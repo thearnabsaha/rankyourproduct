@@ -30,11 +30,11 @@ export default async function ListingOgImage({
           flexDirection: "column",
           justifyContent: "center",
           padding: "72px",
-          background: "#ffffff",
-          color: "#111111",
+          background: "#141413",
+          color: "#FAF9F5",
         }}
       >
-        <div style={{ fontSize: 28, color: "#FE4103", fontWeight: 700 }}>
+        <div style={{ fontSize: 28, color: "#E15A2B", fontWeight: 700 }}>
           rankyourproduct
         </div>
         <div
@@ -48,7 +48,7 @@ export default async function ListingOgImage({
         >
           {label}
         </div>
-        <div style={{ fontSize: 32, marginTop: 28, color: "#555" }}>
+        <div style={{ fontSize: 32, marginTop: 28, color: "#B0AEA5" }}>
           Current bid ${bid} on the public board
         </div>
       </div>

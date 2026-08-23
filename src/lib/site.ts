@@ -1,6 +1,6 @@
 export const SITE_NAME = "rankyourproduct";
 export const SITE_DOMAIN = "rankyourproduct.lol";
-export const ACCENT = "#FE4103";
+export const ACCENT = "#E15A2B";
 
 export const X_HANDLE = (
   process.env.NEXT_PUBLIC_X_HANDLE || "thearnabsaha"

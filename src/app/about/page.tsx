@@ -37,22 +37,22 @@ export default function AboutPage() {
           isPartOf: { "@id": `${CANONICAL_HOST}/#website` },
         }}
       />
-      <h1 className="text-4xl sm:text-5xl font-display font-bold tracking-tight text-black mb-6">
+      <h1 className="text-4xl sm:text-5xl font-display font-bold tracking-tight text-ink mb-6">
         Visibility should not depend on a secret score.
       </h1>
-      <div className="space-y-5 text-[17px] leading-8 text-black/75">
+      <div className="space-y-5 text-[17px] leading-8 text-ink-soft">
         <p>
           Builders ship tools every day that never get a real look. Feeds hide
           them. Search is a guessing game. Most directories sit behind a
           reviewer with a form.
         </p>
         <p>
-          <strong className="text-black">RankYourProduct</strong> is a single
+          <strong className="text-ink">RankYourProduct</strong> is a single
           public table. Drop a product URL or an X @handle, name a whole-dollar
           amount from $1, pay, and that number is your place. Higher number,
           higher row. Lower number, you still show up — just further down.
         </p>
-        <h2 className="text-2xl font-display font-semibold text-black pt-6">
+        <h2 className="text-2xl font-display font-semibold text-ink pt-6">
           One number. No backstage.
         </h2>
         <p>
@@ -68,22 +68,22 @@ export default function AboutPage() {
           New here? Read the{" "}
           <Link
             href="/rules"
-            className="text-[#FE4103] font-semibold hover:underline"
+            className="link-accent"
           >
             ranking rules
           </Link>
           .
         </p>
-        <p className="font-medium text-black pt-4">Want a row?</p>
+        <p className="font-medium text-ink pt-4">Want a row?</p>
         <p>
           Head to the{" "}
-          <Link href="/" className="text-[#FE4103] font-semibold hover:underline">
+          <Link href="/" className="link-accent">
             public product board
           </Link>{" "}
           and put a number on your link.
         </p>
 
-        <h2 className="text-2xl font-display font-semibold text-black pt-6">
+        <h2 className="text-2xl font-display font-semibold text-ink pt-6">
           Who runs this
         </h2>
         <p>
@@ -92,14 +92,14 @@ export default function AboutPage() {
             href={`https://x.com/${X_HANDLE}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#FE4103] font-semibold hover:underline"
+            className="link-accent"
           >
             @{X_HANDLE}
           </a>
           . Questions, payment issues, or anything else — email{" "}
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="text-[#FE4103] font-semibold hover:underline"
+            className="link-accent"
           >
             {CONTACT_EMAIL}
           </a>
