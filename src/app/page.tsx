@@ -11,37 +11,21 @@ import { absUrl, breadcrumbJsonLd, SEO_DESCRIPTION, SEO_TITLE } from "@/lib/seo"
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata(): Promise<Metadata> {
-  let top: { domain: string } | null = null;
-  try {
-    await syncBackdoorListings();
-    top = await prisma.listing.findFirst({
-      where: { highestBid: { gt: 0 } },
-      orderBy: listingOrderBy,
-    });
-  } catch {
-    top = null;
-  }
-  const title = top
-    ? `${top.domain} is #1 — rankyourproduct`
-    : SEO_TITLE;
-  const description = top
-    ? `${top.domain} sits at the top of the public product table. Drop in a URL from $1 and take a row.`
-    : SEO_DESCRIPTION;
-
-  return {
-    title: { absolute: title },
-    description,
-    alternates: { canonical: "/" },
-    openGraph: {
-      title,
-      description,
-      url: absUrl("/"),
-      type: "website",
-    },
-    twitter: { title, description },
-  };
-}
+export const metadata: Metadata = {
+  title: { absolute: SEO_TITLE },
+  description: SEO_DESCRIPTION,
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: SEO_TITLE,
+    description: SEO_DESCRIPTION,
+    url: absUrl("/"),
+    type: "website",
+  },
+  twitter: {
+    title: SEO_TITLE,
+    description: SEO_DESCRIPTION,
+  },
+};
 
 export default async function Home() {
   let listings: Awaited<ReturnType<typeof prisma.listing.findMany>> = [];
