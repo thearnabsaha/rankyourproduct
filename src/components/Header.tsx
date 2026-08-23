@@ -101,12 +101,6 @@ export default function Header({ initial }: { initial?: PresenceSnap }) {
         <div className="flex items-center gap-3 sm:gap-8 relative z-10">
           <nav aria-label="Primary" className="flex items-center gap-3 sm:gap-6 text-sm font-medium">
             <Link
-              href="/how-it-works"
-              className="text-foreground/60 hover:text-foreground transition-colors hidden md:inline"
-            >
-              How it works
-            </Link>
-            <Link
               href="/about"
               className="text-foreground/60 hover:text-foreground transition-colors"
             >

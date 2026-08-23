@@ -7,9 +7,27 @@ import { breadcrumbJsonLd, pageMetadata, webPageJsonLd } from "@/lib/seo";
 export const metadata: Metadata = pageMetadata({
   title: "Ranking rules",
   description:
-    "How RankYourProduct orders the table, what product URLs and X profiles are allowed, and how payments claim a row.",
+    "How RankYourProduct works: list a product or X profile from $1, how the table is ordered, what URLs are allowed, and how payments claim a row.",
   path: "/rules",
 });
+
+const steps = [
+  {
+    n: "1",
+    title: "Paste a product URL or @handle",
+    body: "Use your landing page, app store link, or X profile. Tracking parameters are stripped. Chat and invite links are refused.",
+  },
+  {
+    n: "2",
+    title: "Pick a whole-dollar amount from $1",
+    body: "The default is one dollar above the current leader, so you can take first place in one step. You can pay less and still appear further down.",
+  },
+  {
+    n: "3",
+    title: "Pay. The webhook writes the row",
+    body: "A completed payment is what claims the rank. The thank-you page is not enough on its own. Same URL or handle again with a higher amount moves you up — you pay the new total.",
+  },
+];
 
 export default function RulesPage() {
   return (
@@ -25,7 +43,7 @@ export default function RulesPage() {
           path: "/rules",
           name: "Ranking rules",
           description:
-            "How the table is ordered, what URLs are allowed, and how payments claim a row.",
+            "How RankYourProduct works, how the table is ordered, and how payments claim a row.",
         })}
       />
       <JsonLd
@@ -35,18 +53,26 @@ export default function RulesPage() {
           mainEntity: [
             {
               "@type": "Question",
-              name: "How is rank decided?",
+              name: "How do I list a product on RankYourProduct?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "The place you sit is the largest whole-dollar amount you have actually paid. $1 is the floor.",
+                text: "Paste your product URL or X handle on the homepage, choose a whole-dollar amount from $1, and pay. When payment clears, you appear on the public board.",
               },
             },
             {
               "@type": "Question",
-              name: "What can I list?",
+              name: "How is rank decided?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "A product site, startup page, portfolio URL, or an X @handle. Chat, invite, and shortened links are refused.",
+                text: "Rank is the highest whole-dollar amount successfully paid for that URL or handle. $1 is the floor. There is no algorithm and no voting.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Can I list an X profile?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Yes. Use @handle, x.com/you, or twitter.com/you. Those all map to one row. Chat, invite, and shortened links are refused.",
               },
             },
             {
@@ -64,21 +90,42 @@ export default function RulesPage() {
         How this board works
       </h1>
       <p className="text-[17px] leading-8 text-black/75 mb-10">
-        RankYourProduct is an open table of product URLs and X profiles. The
-        place you sit is the largest amount you have actually paid. That is the
-        whole ranking. A shorter walkthrough is on{" "}
-        <Link
-          href="/how-it-works"
-          className="text-[#FE4103] font-semibold hover:underline"
-        >
-          how RankYourProduct works
-        </Link>
-        .
+        RankYourProduct is a public board for founders. You are not applying to
+        a directory. You are not waiting on votes. You pay a whole-dollar
+        amount, and that number is your place on the table.
       </p>
+
+      <section className="mb-12">
+        <h2 className="text-2xl font-display font-semibold text-black mb-4">
+          Get listed in three steps
+        </h2>
+        <ol className="space-y-8">
+          {steps.map((step) => (
+            <li key={step.n}>
+              <h3 className="text-lg font-semibold text-black">
+                <span className="text-[#FE4103] mr-2">{step.n}.</span>
+                {step.title}
+              </h3>
+              <p className="mt-2 text-[17px] leading-8 text-black/75">{step.body}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-2xl font-display font-semibold text-black mb-4">
+          Who it is for
+        </h2>
+        <p className="text-[17px] leading-8 text-black/75">
+          Indie hackers launching a tool, teams that want a public rank they can
+          explain, and people who want their X profile seen next to products —
+          not buried in a feed.
+        </p>
+      </section>
 
       <section className="space-y-4 mb-10">
         <h2 className="text-2xl font-display font-semibold text-black">
-          1. Order on the table
+          Order on the table
         </h2>
         <ul className="list-disc pl-5 space-y-3 text-[17px] leading-8 text-black/75">
           <li>
@@ -107,7 +154,7 @@ export default function RulesPage() {
 
       <section className="space-y-4 mb-10">
         <h2 className="text-2xl font-display font-semibold text-black">
-          2. What belongs here
+          What belongs here
         </h2>
         <ul className="list-disc pl-5 space-y-3 text-[17px] leading-8 text-black/75">
           <li>
@@ -128,9 +175,9 @@ export default function RulesPage() {
         </ul>
       </section>
 
-      <section className="space-y-4">
+      <section className="space-y-4 mb-10">
         <h2 className="text-2xl font-display font-semibold text-black">
-          3. Paying, and if something breaks
+          Paying, and if something breaks
         </h2>
         <ul className="list-disc pl-5 space-y-3 text-[17px] leading-8 text-black/75">
           <li>
@@ -155,13 +202,60 @@ export default function RulesPage() {
         </ul>
       </section>
 
-      <p className="mt-12 text-[17px] leading-8 text-black/75">
-        Ready?{" "}
-        <Link href="/" className="text-[#FE4103] font-semibold hover:underline">
-          List a product on the public board
+      <section className="mb-12">
+        <h2 className="text-2xl font-display font-semibold text-black mb-4">
+          Common questions
+        </h2>
+        <div className="space-y-6">
+          <div>
+            <h3 className="font-semibold text-black">How do I list a product?</h3>
+            <p className="mt-1 text-[17px] leading-8 text-black/75">
+              Open the{" "}
+              <Link href="/" className="text-[#FE4103] font-semibold hover:underline">
+                public product board
+              </Link>
+              , paste a URL or @handle, pick an amount from $1, and pay.
+            </p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-black">What does rank mean?</h3>
+            <p className="mt-1 text-[17px] leading-8 text-black/75">
+              Rank is the highest whole-dollar amount successfully paid for that
+              listing. Nothing else.
+            </p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-black">Can I list an X profile?</h3>
+            <p className="mt-1 text-[17px] leading-8 text-black/75">
+              Yes. @handle, x.com/you, and twitter.com/you are the same row.
+            </p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-black">Are bids refundable?</h3>
+            <p className="mt-1 text-[17px] leading-8 text-black/75">
+              No. Bids are final. If someone pays more, you slide down.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <p className="text-[17px] leading-8 text-black/75 mb-8">
+        More background is on{" "}
+        <Link
+          href="/about"
+          className="text-[#FE4103] font-semibold hover:underline"
+        >
+          why RankYourProduct exists
         </Link>
         .
       </p>
+
+      <Link
+        href="/"
+        className="inline-flex px-6 py-3.5 bg-[#FE4103] text-white font-medium rounded-xl hover:opacity-90"
+      >
+        Rank your product from $1
+      </Link>
     </article>
   );
 }

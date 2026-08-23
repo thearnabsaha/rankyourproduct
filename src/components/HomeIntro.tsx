@@ -39,14 +39,7 @@ export default function HomeIntro() {
         amount moves you up — you pay the new total, not the gap.
       </p>
       <p className="text-[17px] leading-8 text-black/75">
-        Read{" "}
-        <Link
-          href="/how-it-works"
-          className="text-[#FE4103] font-semibold hover:underline"
-        >
-          how RankYourProduct works
-        </Link>
-        , the{" "}
+        Read the{" "}
         <Link
           href="/rules"
           className="text-[#FE4103] font-semibold hover:underline"

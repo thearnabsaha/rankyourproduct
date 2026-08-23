@@ -65,14 +65,7 @@ export default function AboutPage() {
           total, not a leftover. Rows stay until someone spends more.
         </p>
         <p>
-          New here? Start with{" "}
-          <Link
-            href="/how-it-works"
-            className="text-[#FE4103] font-semibold hover:underline"
-          >
-            how listing and rank work
-          </Link>{" "}
-          or the{" "}
+          New here? Read the{" "}
           <Link
             href="/rules"
             className="text-[#FE4103] font-semibold hover:underline"

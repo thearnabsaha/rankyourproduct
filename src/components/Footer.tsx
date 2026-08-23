@@ -9,12 +9,6 @@ export default function Footer() {
           <Link href="/" className="hover:text-foreground transition-colors">
             Product board
           </Link>
-          <Link
-            href="/how-it-works"
-            className="hover:text-foreground transition-colors"
-          >
-            How it works
-          </Link>
           <Link href="/about" className="hover:text-foreground transition-colors">
             About
           </Link>

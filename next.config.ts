@@ -52,6 +52,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/index.html", destination: "/", permanent: true },
       { source: "/home", destination: "/", permanent: true },
+      { source: "/how-it-works", destination: "/rules", permanent: true },
+      { source: "/how-it-works/", destination: "/rules", permanent: true },
     ];
   },
 };

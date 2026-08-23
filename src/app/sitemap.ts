@@ -15,12 +15,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
-      url: absUrl("/how-it-works"),
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
       url: absUrl("/about"),
       lastModified: now,
       changeFrequency: "monthly",
@@ -30,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: absUrl("/rules"),
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.5,
+      priority: 0.8,
     },
   ];
 

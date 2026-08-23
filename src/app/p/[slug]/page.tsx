@@ -187,14 +187,7 @@ export default async function ListingPage({
       </p>
       <p className="text-[17px] leading-8 text-black/75 mb-8">
         Anyone can take a higher row by paying a larger whole-dollar amount for
-        the same {handle ? "handle" : "URL"}. See{" "}
-        <Link
-          href="/how-it-works"
-          className="text-[#FE4103] font-semibold hover:underline"
-        >
-          how RankYourProduct works
-        </Link>{" "}
-        and the{" "}
+        the same {handle ? "handle" : "URL"}. See the{" "}
         <Link
           href="/rules"
           className="text-[#FE4103] font-semibold hover:underline"

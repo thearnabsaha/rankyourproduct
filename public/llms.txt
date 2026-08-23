@@ -4,7 +4,6 @@
 > Drop in a product URL or X handle, pay a whole-dollar amount from $1, and that number is your row.
 
 - Home: https://www.rankyourproduct.lol/
-- How it works: https://www.rankyourproduct.lol/how-it-works
 - About: https://www.rankyourproduct.lol/about
 - Rules: https://www.rankyourproduct.lol/rules
 - Contact: hparnab0@gmail.com
