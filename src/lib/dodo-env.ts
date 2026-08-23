@@ -1,3 +1,5 @@
+import { SITE_URL } from "@/lib/site";
+
 export const dodoEnvironment =
   process.env.DODO_PAYMENTS_ENVIRONMENT === "live_mode" ||
   process.env.DODO_ENVIRONMENT === "live_mode"
@@ -30,11 +32,7 @@ export function dodoProductId(): string {
 
 export function dodoReturnUrl(): string {
   if (process.env.DODO_PAYMENTS_RETURN_URL) {
-    return process.env.DODO_PAYMENTS_RETURN_URL;
+    return process.env.DODO_PAYMENTS_RETURN_URL.replace(/\/$/, "");
   }
-  const site = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(
-    /\/$/,
-    "",
-  );
-  return `${site}/success`;
+  return `${SITE_URL}/success`;
 }

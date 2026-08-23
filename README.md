@@ -17,6 +17,19 @@ Footer and About use `NEXT_PUBLIC_X_HANDLE` (`thearnabsaha`) and `NEXT_PUBLIC_CO
 
 Hardcoded top listings live in `src/data/backdoor-listings.ts`. Edit that file to pin a URL at #1 (or #2, #3, …) without paying. Refresh the homepage, or hit `/api/admin/backdoor?secret=...`.
 
+## Domain (rankyourproduct.lol)
+
+1. In [Vercel](https://vercel.com) open the **rankyourproduct** project → **Settings → Domains**.
+2. Add `rankyourproduct.lol` and `www.rankyourproduct.lol`.
+3. At your registrar, point DNS at Vercel:
+
+| Type | Name | Value |
+|---|---|---|
+| A | `@` | `76.76.21.21` |
+| CNAME | `www` | `cname.vercel-dns.com` |
+
+Wait for DNS (often a few minutes). Production URLs then use `https://rankyourproduct.lol`. Dodo webhook: `https://rankyourproduct.lol/api/webhook`.
+
 ## PWA
 
 Installable on phone and desktop (Chrome / Edge / Safari Add to Home Screen). Manifest is at `/manifest.webmanifest`; the service worker is `/sw.js`. Localhost and HTTPS both qualify.
