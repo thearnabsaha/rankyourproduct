@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { CONTACT_EMAIL, SITE_DOMAIN, SITE_NAME, X_HANDLE } from "@/lib/site";
 
-export const CANONICAL_HOST = `https://${SITE_DOMAIN}`;
+export const CANONICAL_HOST = `https://www.${SITE_DOMAIN}`;
 export const SITE_LOGO = `${CANONICAL_HOST}/icons/icon-512.png`;
 
 export const SEO_TITLE = "RankYourProduct — Pay $1 to list your product or X profile";

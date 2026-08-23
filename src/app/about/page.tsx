@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CONTACT_EMAIL, X_HANDLE } from "@/lib/site";
 import JsonLd from "@/components/JsonLd";
-import { absUrl, breadcrumbJsonLd, pageMetadata, webPageJsonLd } from "@/lib/seo";
+import { absUrl, breadcrumbJsonLd, CANONICAL_HOST, pageMetadata, webPageJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   title: "About RankYourProduct",
@@ -34,7 +34,7 @@ export default function AboutPage() {
           "@type": "AboutPage",
           name: "About RankYourProduct",
           url: absUrl("/about"),
-          isPartOf: { "@id": "https://rankyourproduct.lol/#website" },
+          isPartOf: { "@id": `${CANONICAL_HOST}/#website` },
         }}
       />
       <h1 className="text-4xl sm:text-5xl font-display font-bold tracking-tight text-black mb-6">

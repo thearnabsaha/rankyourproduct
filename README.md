@@ -30,7 +30,7 @@ Hardcoded top listings live in `src/data/backdoor-listings.ts`. Edit that file t
 | A | `@` | `76.76.21.21` |
 | CNAME | `www` | `cname.vercel-dns.com` |
 
-Wait for DNS (often a few minutes). Production URLs then use `https://rankyourproduct.lol`. Dodo webhook: `https://rankyourproduct.lol/api/webhook`.
+Wait for DNS (often a few minutes). In Vercel, set **www.rankyourproduct.lol** as the primary domain so the apex redirects to www (not the other way around). Production URL: `https://www.rankyourproduct.lol`. Dodo webhook: `https://www.rankyourproduct.lol/api/webhook`.
 
 ## PWA
 
